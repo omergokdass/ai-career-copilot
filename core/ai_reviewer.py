@@ -81,8 +81,22 @@ class AIReviewer:
                     if parts:
                         return parts[0].get("text", "")
         except urllib.error.HTTPError as e:
+            # Rate limit (429) durumunda bekle ve bir kez daha dene
+            if e.code == 429:
+                print(f"[AIReviewer] Gemini API Kota Limiti (429). 6 saniye beklenip tekrar deneniyor...")
+                time.sleep(6)
+                try:
+                    with urllib.request.urlopen(req, timeout=20) as resp:
+                        resp_json = json.loads(resp.read().decode("utf-8"))
+                        candidates = resp_json.get("candidates", [])
+                        if candidates:
+                            parts = candidates[0].get("content", {}).get("parts", [])
+                            if parts:
+                                return parts[0].get("text", "")
+                except Exception as retry_err:
+                    print(f"[AIReviewer] Gemini API Retry Hatası: {retry_err}")
             # Model bulunamadıysa (404) sırayla fallback modelleri dene
-            if e.code == 404:
+            elif e.code == 404:
                 fallbacks = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-2.5-flash"]
                 for fb in fallbacks:
                     if fb != model:
