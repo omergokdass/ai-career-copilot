@@ -1,0 +1,29 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment secrets
+.env
+.env.local
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Browser sessions
+.browser_session/
+output/pending_screenshots/
+
+# Output artifacts
+output/cover_letters/*
+!output/cover_letters/.gitkeep
+output/tailored_cvs/*
+!output/tailored_cvs/.gitkeep
+output/DAILY_REPORT_*.md
+
+# Local SQLite databases
+*.db
+!tests/*.db

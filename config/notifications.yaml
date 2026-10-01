@@ -1,0 +1,22 @@
+# ==============================================================================
+# BİLDİRİM VE TELEGRAM BOT AYARLARI
+# ==============================================================================
+# Not: Token ve Chat ID bilgileri öncelikle .env dosyasından veya ortam
+# değişkenlerinden (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID) okunur.
+# ==============================================================================
+
+telegram:
+  bot_token: ""   # Boş bırakılırsa .env veya TELEGRAM_BOT_TOKEN kullanılır
+  chat_id: ""     # Boş bırakılırsa .env veya TELEGRAM_CHAT_ID kullanılır
+  enabled: true
+
+  # Bildirim filtreleri
+  notify_strong_matches: true      # %70 ve üzeri güçlü eşleşmeler
+  notify_borderline_matches: true  # %50 - %69 sınırda / denenebilir ilanlar
+  notify_successful_apply: true    # Yapılan başarılı başvurular / hazır paketler
+  notify_needs_review: true        # Onay veya ek girdi bekleyen ilanlar
+  notify_daily_summary: true       # Günlük özet raporu
+
+thresholds:
+  strong_match_min: 70.0
+  borderline_match_min: 50.0

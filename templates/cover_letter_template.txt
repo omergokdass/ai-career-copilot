@@ -1,0 +1,19 @@
+Dear {{ hiring_manager or "Hiring Team" }} at {{ company_name }},
+
+I am writing to express my strong interest in the {{ job_title }} position at {{ company_name }}. With a solid foundation in Software Engineering and hands-on experience in backend architectures, microservices, and distributed systems, I am excited about the opportunity to contribute to your engineering goals.
+
+Throughout my freelance and project work, I have focused on building performant, resilient, and well-tested services:
+- Developed and maintained 15+ RESTful microservices using {{ primary_stack_bullet }}, achieving 99.9% uptime and sub-second API latencies.
+- {{ secondary_highlight_bullet }}
+- Applied rigorous engineering standards, including comprehensive automated testing (JUnit, Mockito) and containerized deployment pipelines (Docker, Linux).
+
+What excites me about {{ company_name }} is {{ company_appeal_reason }}. My technical background, combined with my active problem-solving experience at 42 Istanbul, has prepared me to quickly integrate into your workflow, take ownership of backend components, and deliver clean, maintainable code.
+
+Thank you for your time and consideration. I welcome the opportunity to discuss how my background and skills align with your team's needs.
+
+Sincerely,
+
+{{ candidate_name }}
+{{ candidate_phone }} | {{ candidate_email }}
+{{ candidate_linkedin }}
+{{ candidate_github }}

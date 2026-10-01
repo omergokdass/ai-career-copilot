@@ -1,0 +1,62 @@
+# ==============================================================================
+# İŞ ARAMA KRİTERLERİ (ÖMER FARUK GÖKDAŞ - GERÇEK YETENEK VE EĞİTİM ODAKLI)
+# ==============================================================================
+
+search_queries:
+  # 1. Genç Yetenek, Staj ve Yetiştirme Programları (En Yüksek Kabul Şansı)
+  - "Genç Yetenek Yazılım"
+  - "Software Engineering Intern"
+  - "Yazılım Stajyeri"
+  - "Graduate Software Engineer"
+  - "Talent Program Software"
+  - "New Grad Software Engineer"
+
+  # 2. C / C++ & Sistem Programlama (En Güçlü 42 Istanbul Yetenekleri)
+  - "C++ Developer"
+  - "Junior C++ Developer"
+  - "C Developer"
+  - "Embedded Software Engineer"
+  - "Systems Software Engineer"
+  - "Linux Software Engineer"
+
+  # 3. Junior & Giriş Seviyesi Backend / Genel Yazılım
+  - "Junior Software Engineer"
+  - "Junior Software Developer"
+  - "Junior Backend Developer"
+  - "Junior Node.js Developer"
+  - "Software Engineer"
+  - "Backend Developer"
+
+  # 4. Frontend & Web Geliştirme (Astro, TypeScript, React Native & branda.ist Odaklı)
+  - "Junior Frontend Developer"
+  - "Frontend Developer"
+  - "Web Developer"
+  - "Junior Web Developer"
+  - "TypeScript Developer"
+
+  # 5. IT / Sistem & Altyapı Destek (Beşiktaş Belediyesi Deneyimi Odaklı)
+  - "IT Support Specialist"
+  - "Sistem Destek Uzmanı"
+
+  # 6. AI & Geliştirici / Yapay Zeka Destekli Mühendislik (GEN Academy & AI Agent Deneyimi)
+  - "AI Software Engineer"
+  - "Junior AI Engineer"
+  - "AI Developer"
+  - "Junior AI Developer"
+  - "Prompt Engineer"
+  - "Generative AI Developer"
+
+target_locations:
+  - "Istanbul, Turkey"
+  - "Turkey"
+  - "Remote"
+
+time_filter: "r86400"
+sort_by: "DD"
+experience_levels: ["1", "2", "3"]
+work_types: ["Remote", "Hybrid", "On-site"]
+
+min_match_score: 50.0
+jobs_per_query: 4
+daily_max_applications: 25
+daily_max_inspections: 60

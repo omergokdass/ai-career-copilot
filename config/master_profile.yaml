@@ -1,0 +1,168 @@
+# ==============================================================================
+# MASTER CANDIDATE PROFILE (TEK GERÇEKLİK KAYNAĞI - %100 DÜRÜST VE DOĞRULANMIŞ)
+# ==============================================================================
+# Ömer Faruk Gökdaş'ın gerçekte yaptığı, mülakatta arkasında durabileceği ve sahip olduğu
+# doğrulanmış bilgi ve projeler. Asla uydurma metrik veya sahte teknoloji içermez.
+# ==============================================================================
+
+personal:
+  full_name: "OMER FARUK GOKDAS"
+  default_title: "Software Engineer | C/C++, Systems & AI-Augmented Engineering"
+  email: "faruk_gokdas@hotmail.com"
+  phone: "+90 505 982 58 87"
+  location: "Istanbul, Turkey"
+  linkedin: "https://linkedin.com/in/omergokdass"
+  linkedin_display: "linkedin.com/in/omergokdass"
+  github: "https://github.com/omergokdass"
+  github_display: "github.com/omergokdass"
+  website: "https://omergokdass.github.io"
+  website_display: "omergokdass.github.io"
+  master_cv_en_pdf: "source_resume/Omer_Faruk_Gokdas_CV_Master_ATS.pdf"
+  master_cv_tr_pdf: "source_resume/Omer_Faruk_Gokdas_CV_Master_ATS_TR.pdf"
+
+role_titles:
+  systems: "Software Engineer | C/C++, Unix & Systems Programming"
+  backend: "Junior Backend Developer | C, Node.js & Database Systems"
+  junior: "Junior Software Engineer | Algorithms, Systems & Backend"
+  frontend: "Frontend / Web Developer | Astro, TypeScript, JavaScript"
+  general: "Software Engineer | C/C++, Systems & AI-Augmented Engineering"
+
+skills:
+  core_languages:
+    category_name: "Core Programming Languages"
+    items: ["C", "C++", "TypeScript", "JavaScript (ES6)", "SQL", "Bash Shell Scripting", "Java (OOP & Foundations)"]
+  systems_programming:
+    category_name: "Systems & Low-Level Development"
+    items: ["Linux (Ubuntu)", "POSIX Unix Standards", "Multithreading", "Mutex Synchronization", "Heap Memory Allocation", "Process Control", "Signals Handling"]
+  web_frontend:
+    category_name: "Web & Frontend Development"
+    items: ["Astro", "TypeScript", "JavaScript (ES6)", "HTML5", "CSS3", "Responsive Design", "Static Site Generation (SSG)", "DOM Manipulation"]
+  backend_databases:
+    category_name: "Backend & Databases"
+    items: ["PostgreSQL", "MySQL", "Node.js (Express)", "Socket.IO", "WebSockets", "RESTful APIs", "Relational Database Modeling"]
+  software_engineering_testing:
+    category_name: "Software Engineering & Testing"
+    items: ["Data Structures & Algorithms", "Object-Oriented Programming (OOP)", "Debugging (GDB, Valgrind)", "Unit Testing", "SDLC"]
+  ai_augmented_engineering:
+    category_name: "AI-Augmented Engineering & Productivity"
+    items: ["AI Coding Agents (Antigravity, Claude, Cursor)", "Agentic Workflow Automation", "Prompt Engineering for Code Architecture", "Rapid Prototyping"]
+  tools_infrastructure:
+    category_name: "Tools & Infrastructure"
+    items: ["Git", "GitHub", "Version Control", "Docker (Basics)", "Postman", "Linux CLI", "Active Directory", "TCP/IP Networking Fundamentals"]
+
+experience:
+  - id: "freelance_web"
+    role: "Freelance Web Developer"
+    company: "Self-Employed (Bağımsız Çalışan)"
+    location: "Istanbul, Turkey"
+    date_range: "Jan 2023 - Present"
+    tags: ["astro", "typescript", "html5", "css3", "javascript", "frontend", "responsive design", "web development", "seo", "sharp", "purgecss"]
+    bullets:
+      - text: "Architected and published branda.ist, an 80+ page commercial platform using Astro and TypeScript, implementing automated semantic SEO architecture across 12 product categories."
+        tags: ["astro", "typescript", "seo", "production"]
+      - text: "Engineered responsive component layouts and automated asset optimization with Sharp and PurgeCSS, achieving sub-1.5 second initial page load times across 80+ pages."
+        tags: ["css", "sharp", "performance", "responsive"]
+      - text: "Developed JavaScript (ES6) DOM validation scripts that decreased form submission errors by 30% and improved user interaction speed."
+        tags: ["javascript", "dom", "ui"]
+
+  - id: "besiktas_intern"
+    role: "IT Intern"
+    company: "Besiktas Municipality"
+    location: "Istanbul, Turkey"
+    date_range: "Feb 2026 - Jun 2026"
+    tags: ["infrastructure", "systems", "bash", "networking", "active directory", "support", "linux"]
+    bullets:
+      - text: "Administered enterprise Active Directory accounts, managing user access credentials and organizational security policies."
+        tags: ["active directory", "sysadmin", "security"]
+      - text: "Maintained enterprise IT infrastructure, troubleshooting TCP/IP networking, hardware, and OS configurations across municipal workstations."
+        tags: ["networking", "tcp/ip", "troubleshooting", "infrastructure"]
+      - text: "Handled and resolved technical support requests via internal automation ticketing platform, ensuring operational continuity for municipal departments."
+        tags: ["support", "operations", "troubleshooting"]
+      - text: "Developed custom Bash shell automation scripts to streamline routine network diagnostics and system health monitoring."
+        tags: ["bash", "automation", "linux", "scripting"]
+
+projects:
+  - id: "minishell"
+    name: "Minishell — POSIX Unix Shell"
+    technologies: "C, POSIX System Calls, Process Control, Pipes & Redirections"
+    tags: ["c", "posix", "linux", "systems", "operating systems", "memory management"]
+    bullets:
+      - text: "Engineered a POSIX-compliant Unix shell in C with command parsing, built-ins (cd, echo, pwd, export, unset, env, exit), and environment variable expansion."
+        tags: ["c", "unix", "posix", "processes"]
+      - text: "Constructed multi-pipe redirection mechanisms (pipe, dup2), process control (fork, execve, waitpid), robust signal handling (SIGINT, SIGQUIT), and 100% leak-free heap memory management verified by Valgrind."
+        tags: ["c", "memory", "valgrind", "systems", "concurrency"]
+
+  - id: "push_swap_philosophers"
+    name: "Push Swap & Philosophers — Algorithms & Concurrency"
+    technologies: "C, C++, Multithreading (pthread), Mutex Locks, Data Structures"
+    tags: ["c", "c++", "multithreading", "algorithms", "pthreads", "mutex", "concurrency"]
+    bullets:
+      - text: "Philosophers: Solved the classic Dining Philosophers synchronization challenge using POSIX threads and mutex locks to eliminate race conditions and deadlocks."
+        tags: ["multithreading", "concurrency", "pthreads", "c"]
+      - text: "Push Swap: Designed an optimized stack-sorting algorithm in C under strict operational constraints, achieving O(N log N) asymptotic time complexity."
+        tags: ["algorithms", "sorting", "complexity", "c", "data structures"]
+
+  - id: "nishchat"
+    name: "NishChat — Campus Messaging Platform (Graduation Project)"
+    technologies: "React Native, Node.js, Express, Socket.IO, PostgreSQL"
+    tags: ["node.js", "express", "socket.io", "postgresql", "react native", "real-time"]
+    bullets:
+      - text: "Designed and developed a real-time messaging mobile application for student communication as a university graduation project using Node.js and Express."
+        tags: ["backend", "express", "node.js", "graduation project"]
+      - text: "Implemented bidirectional WebSocket channels via Socket.IO for low-latency message streaming and structured PostgreSQL relational schemas for user authentication."
+        tags: ["socket.io", "websockets", "postgresql", "database"]
+      - text: "Tested client-server synchronization across multiple emulators and physical devices, ensuring stable bidirectional communication."
+        tags: ["testing", "mobile", "react native"]
+
+  - id: "branda_ist"
+    name: "branda.ist — Commercial Web Platform"
+    technologies: "Astro, TypeScript, Static Site Generation (SSG), Sharp, PurgeCSS, Programmatic SEO"
+    tags: ["astro", "typescript", "ssg", "seo", "sharp", "purgecss", "production", "ai"]
+    bullets:
+      - text: "Deployed a production commercial platform (branda.ist) utilizing Astro SSG and TypeScript to render 80+ responsive catalog pages for industrial canvas products."
+        tags: ["astro", "typescript", "ssg", "seo", "production"]
+      - text: "Engineered streamlined component architecture with AI tools, creating reusable Astro and TypeScript components that improved code maintainability by 50%."
+        tags: ["astro", "typescript", "ai", "architecture"]
+
+  - id: "portfolio_web"
+    name: "Personal Portfolio & Responsive Web Interface"
+    technologies: "HTML5, CSS3, JavaScript (ES6+), Git"
+    tags: ["html5", "css3", "javascript", "frontend", "responsive"]
+    bullets:
+      - text: "Developed a modern, responsive personal portfolio website showcasing software projects and interactive components."
+        tags: ["frontend", "javascript", "portfolio"]
+      - text: "Authored semantic HTML markup and modular CSS layouts utilizing Flexbox and CSS Grid, ensuring seamless display across all screen viewports."
+        tags: ["css", "html5", "responsive"]
+
+education:
+  - institution: "42 Istanbul (Ecole 42 Network)"
+    degree: "Software Engineering & Systems Curriculum"
+    location: "Istanbul, Turkey"
+    date_range: "Jan 2025 - Present"
+    sub_text: "Core Focus: C/C++, POSIX Unix Standards, Concurrency & Multithreading, Heap Memory Allocation, Peer-to-Peer Systems Evaluation"
+  - institution: "Nisantasi University"
+    degree: "Bachelor of Science in Software Engineering"
+    location: "Istanbul, Turkey"
+    date_range: "Sep 2021 - Jul 2026"
+    sub_text: "Relevant Coursework: Data Structures & Algorithms, Operating Systems, Database Systems, Object-Oriented Programming, Computer Networks"
+
+certifications_and_awards:
+  - "3rd Place Award: Bilisim Vadisi Web Hackathon Competition (2024)"
+  - "Green Software Practitioner Certification: Green Software Foundation (2025)"
+  - "Software Technologies & AI Program Certification: GEN Academy (2024)"
+  - "C Programming Language Certification: BTK Academy (2023)"
+
+languages:
+  - name: "Turkish"
+    level: "Native"
+  - name: "English"
+    level: "Professional Working Proficiency (B2)"
+
+# Başvuru Formu Parametreleri (Gerçek Durum)
+application_defaults:
+  authorized_to_work_in_turkey: true
+  requires_sponsorship_turkey: false
+  notice_period: "Immediate (No notice period)"
+  preferred_work_modes: ["Remote", "Hybrid", "On-site"]
+  preferred_location: "Istanbul, Turkey"
+  employment_status: "Available Immediately / Actively Seeking Opportunities"

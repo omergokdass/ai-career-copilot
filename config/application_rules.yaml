@@ -1,0 +1,61 @@
+# ==============================================================================
+# OTOMATİK BAŞVURU (EASY APPLY) KURALLARI - %100 DÜRÜST VE DOĞRULANMIŞ
+# ==============================================================================
+
+personal_answers:
+  first_name: "Omer Faruk"
+  last_name: "Gokdas"
+  email: "faruk_gokdas@hotmail.com"
+  phone_country_code: "+90"
+  phone_number: "5059825887"
+  city: "Istanbul, Turkey"
+
+standard_questions:
+  authorized_to_work: "Yes"
+  sponsorship_required: "No"
+  notice_period: "Immediate (Hemen başlayabilir)"
+  notice_period_weeks: "0"
+  currently_employed: "No"
+  commute_or_hybrid_ok: "Yes"
+
+# Doğrulanmış Gerçek Deneyim Yılları (Mülakatta arkasında durabileceğin süreler)
+tech_experience_years:
+  c: 2
+  c++: 1
+  linux: 2
+  bash: 2
+  unix: 2
+  posix: 1
+  sql: 2
+  postgresql: 1
+  javascript: 1
+  node.js: 1
+  express: 1
+  git: 2
+  active directory: 1
+  # Teorik / üstünkörü bilinen teknolojilere 0 yazılarak mülakatta zor durumda kalınması önlenir:
+  java: 1
+  spring: 0
+  spring boot: 0
+  docker: 0
+  kubernetes: 0
+  redis: 0
+  aws: 0
+
+# Durdurma Tetikleyicileri (Hassas Sorular):
+strict_review_triggers:
+  - "salary"
+  - "compensation"
+  - "maaş"
+  - "beklenti"
+  - "remuneration"
+  - "relocate"
+  - "relocation"
+  - "taşınma"
+  - "german"
+  - "almanca"
+  - "french"
+  - "assessment"
+  - "hackerrank"
+  - "sınav"
+  - "test"

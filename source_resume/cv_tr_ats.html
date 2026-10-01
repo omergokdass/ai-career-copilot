@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ömer Faruk Gökdaş - Özgeçmiş</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial:wght@400;600;700&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 6mm 9mm 6mm 9mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      font-family: 'Arial', 'Helvetica', sans-serif;
+      color: #0f172a;
+      background-color: #ffffff;
+      font-size: 8pt;
+      line-height: 1.28;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ATS-OPTIMIZED HEADER */
+    header {
+      text-align: center;
+      border-bottom: 1.5px solid #1e3a8a;
+      padding-bottom: 3px;
+      margin-bottom: 5px;
+    }
+
+    .name {
+      font-size: 16.5pt;
+      font-weight: 700;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+
+    .title {
+      font-size: 9.2pt;
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 2px;
+    }
+
+    .contact-line {
+      font-size: 8pt;
+      color: #334155;
+      line-height: 1.3;
+    }
+
+    .contact-line a {
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+
+    /* SECTION TITLES */
+    section {
+      margin-bottom: 5px;
+    }
+
+    .section-title {
+      font-size: 8.8pt;
+      font-weight: 700;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-bottom: 1px solid #94a3b8;
+      padding-bottom: 1px;
+      margin-bottom: 3px;
+    }
+
+    /* SKILLS */
+    .skills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5px;
+    }
+
+    .skill-item {
+      font-size: 8pt;
+      line-height: 1.25;
+    }
+
+    .skill-item strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* EXPERIENCE & PROJECTS */
+    .entry {
+      margin-bottom: 3.5px;
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5px;
+    }
+
+    .entry-role {
+      font-size: 8.3pt;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .entry-company {
+      font-weight: 600;
+      color: #1d4ed8;
+    }
+
+    .entry-date {
+      font-size: 7.7pt;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .entry-sub {
+      font-size: 7.7pt;
+      font-style: italic;
+      color: #334155;
+      margin-bottom: 1px;
+    }
+
+    ul.bullets {
+      padding-left: 13px;
+      margin-top: 0.5px;
+    }
+
+    ul.bullets li {
+      font-size: 8pt;
+      color: #1e293b;
+      margin-bottom: 1px;
+      line-height: 1.25;
+    }
+
+    .simple-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2px;
+    }
+
+    .simple-item {
+      font-size: 8pt;
+      color: #1e293b;
+      line-height: 1.25;
+    }
+
+    .simple-item strong {
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- HEADER -->
+    <header>
+      <h1 class="name">ÖMER FARUK GÖKDAŞ</h1>
+      <div class="title">Yazılım Mühendisi | Java, Spring Boot & Backend Sistemleri</div>
+      <div class="contact-line">
+        İstanbul, Türkiye &nbsp;|&nbsp; +90 505 982 58 87 &nbsp;|&nbsp; <a href="mailto:faruk_gokdas@hotmail.com">faruk_gokdas@hotmail.com</a><br>
+        <a href="https://linkedin.com/in/omergokdass">linkedin.com/in/omergokdass</a> &nbsp;|&nbsp; 
+        <a href="https://github.com/omergokdass">github.com/omergokdass</a> &nbsp;|&nbsp; 
+        <a href="https://omergokdass.github.io">omergokdass.github.io</a>
+      </div>
+    </header>
+
+    <!-- TEKNİK YETENEKLER -->
+    <section>
+      <h2 class="section-title">TEKNİK YETENEKLER</h2>
+      <div class="skills-list">
+        <div class="skill-item"><strong>Programlama Dilleri:</strong> Java (SE, EE), C, C++, TypeScript, JavaScript, SQL, Bash Shell Betikleme</div>
+        <div class="skill-item"><strong>Backend & Framework'ler:</strong> Spring Boot 3, Spring Data JPA, Hibernate, JUnit 5, Mockito, Node.js, Express, NestJS, REST API'leri, Mikroservisler, WebSockets, Socket.IO</div>
+        <div class="skill-item"><strong>Veritabanı & Önbellek:</strong> PostgreSQL, MySQL, Redis, Prisma ORM, Sorgu Optimizasyonu</div>
+        <div class="skill-item"><strong>Sistem & DevOps:</strong> Linux (Ubuntu), POSIX, Eşzamanlılık (Mutex/Pthreads), Docker Konteynerizasyon, Nginx, CI/CD Süreçleri, Git, GitHub, TCP/IP, Postman, Active Directory</div>
+        <div class="skill-item"><strong>Mobil & Web:</strong> React Native, HTML5, CSS3, Çapraz Platform Mimarisi</div>
+      </div>
+    </section>
+
+    <!-- İŞ DENEYİMİ -->
+    <section>
+      <h2 class="section-title">İŞ DENEYİMİ</h2>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div><span class="entry-role">Serbest Yazılım Geliştirici</span> - <span class="entry-company">Bireysel</span> | İstanbul, Türkiye</div>
+          <span class="entry-date">Oca 2023 - Günümüz</span>
+        </div>
+        <ul class="bullets">
+          <li>Müşterilerle iş birliği yaparak Java (Spring Boot) ve Node.js ile aylık 10.000+ talebi %99.9 kullanılabilirlikle karşılayan 15+ RESTful mikroservis mimarisi kurguladı ve devreye aldı.</li>
+          <li>Spring Boot servislerinde JUnit 5 ve Mockito ile kapsamlı teknik dokümantasyon ve otomatik test paketleri yazarak %85+ kod kapsama oranı elde etti.</li>
+          <li>Docker, Nginx ve SSL yenileme betikleriyle 10+ Linux üretim sunucusunun dağıtım süreçlerini otomatikleştirerek canlıya alım hızını %40 artırdı.</li>
+          <li>PostgreSQL veritabanı sorgularını ve Redis önbellekleme katmanlarını optimize ederek tepe nokta API yanıt sürelerini %30 oranında kısalttı (450ms'den 315ms'ye).</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div><span class="entry-role">BT Stajyeri</span> - <span class="entry-company">Beşiktaş Belediyesi</span> | İstanbul, Türkiye</div>
+          <span class="entry-date">Şub 2026 - Haz 2026</span>
+        </div>
+        <ul class="bullets">
+          <li>12 belediye birimindeki 500+ Active Directory hesabı için kimlik yönetimi ve güvenlik politikalarını standartlaştırarak güvenlik açıklarını %25 oranında azalttı.</li>
+          <li>Kurumsal BT altyapısını yönetti; 500+ iş istasyonunun TCP/IP ağ sorunlarını ve işletim sistemi yapılandırmalarını %98 SLA uyumu ile çözümledi.</li>
+          <li>Flexy otomasyon platformu üzerinden iletilen 200+ teknik destek talebinin çözümlerini iletişim kurarak yönetti ve ortalama çözüm süresini %35 kısalttı.</li>
+          <li>Sistem sağlık kontrolleri ve ağ tanılamaları için özel Bash otomasyon betikleri geliştirerek haftalık 5+ saatlik manuel iş yükünü ortadan kaldırdı.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PROJELER -->
+    <section>
+      <h2 class="section-title">PROJELER</h2>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-role">Couple OS Platform</span>
+        </div>
+        <div class="entry-sub">Teknolojiler: React Native, NestJS, Prisma ORM, PostgreSQL, WebSockets</div>
+        <ul class="bullets">
+          <li>NestJS, Prisma ORM ve PostgreSQL kullanarak günlük 5.000+ anlık bildirim ileten olay güdümlü mikroservis arka ucu geliştirdi (%99.95 servis kullanılabilirliği).</li>
+          <li>Mobil istemciler arasında gerçek zamanlı durum senkronizasyonu için çift yönlü WebSocket protokol kanalları kurarak 100ms altı veri iletimi sağladı.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-role">NishChat — Kampüs Mesajlaşma Platformu</span>
+        </div>
+        <div class="entry-sub">Teknolojiler: React Native, Node.js, Express, Socket.IO, PostgreSQL</div>
+        <ul class="bullets">
+          <li>1.000+ kurumsal kullanıcı için Node.js, Express ve PostgreSQL ile alan adı doğrulamalı güvenli gerçek zamanlı mesajlaşma sistemi tasarladı ve yayına aldı.</li>
+          <li>50+ eşzamanlı Socket.IO WebSocket bağlantısını yöneterek günlük 10.000+ mesajı tepe yük altında sıfır paket kaybıyla iletti.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-role">Minishell — POSIX Unix Kabuğu</span>
+        </div>
+        <div class="entry-sub">Teknolojiler: C, POSIX Sistem Çağrıları, Süreç Kontrolü, Boru Hatları & Yönlendirmeler</div>
+        <ul class="bullets">
+          <li>C dili ile 15+ yerleşik komut, sinyal işleme (SIGINT, SIGQUIT) ve süreç kontrolü (fork, execve, waitpid) içeren POSIX uyumlu Unix kabuğu geliştirdi.</li>
+          <li>Çok aşamalı boru hattı mekanizmaları (pipe, dup2) ve özel dinamik bellek yönetimi algoritmalarıyla Valgrind doğrulamalı %100 sızıntısız çalışma elde etti.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-role">Push Swap & Philosophers — Algoritmalar & Sistem Programlama</span>
+        </div>
+        <div class="entry-sub">Teknolojiler: C, C++, Multithreading (pthread), Mutex Kilitleri, Veri Yapıları</div>
+        <ul class="bullets">
+          <li>Push Swap için 500 tamsayıyı 5.500 işlem altında sıralayan O(N log N) zaman karmaşıklığına sahip optimize yığın sıralama algoritması geliştirdi.</li>
+          <li>POSIX mutex kilitleri ve çoklu iş parçacığı (pthread) ile C/C++ işleme altyapısını geliştirerek 200+ iş parçacığını optimize etti ve çalışma süresini %40 azalttı.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- EĞİTİM -->
+    <section>
+      <h2 class="section-title">EĞİTİM</h2>
+      <div class="entry">
+        <div class="entry-header">
+          <div><span class="entry-role">Nişantaşı Üniversitesi</span> - <span class="entry-company">Yazılım Mühendisliği (Lisans Derecesi)</span> | İstanbul, Türkiye</div>
+          <span class="entry-date">Eyl 2021 - Haz 2026</span>
+        </div>
+        <div class="entry-sub">GANO: 2.98 / 4.00 | İlgili Dersler: Veri Yapıları ve Algoritmalar, İşletim Sistemleri, Veritabanı Yönetim Sistemleri, Nesne Yönelimli Programlama, Yazılım Mimarisi, Bilgisayar Ağları</div>
+      </div>
+      <div class="entry">
+        <div class="entry-header">
+          <div><span class="entry-role">42 İstanbul (École 42 Ağı)</span> - <span class="entry-company">Yazılım Mühendisliği & Sistem Müfredatı</span> | İstanbul, Türkiye</div>
+          <span class="entry-date">Oca 2025 - Günümüz</span>
+        </div>
+        <div class="entry-sub">Temel Odak: C/C++, POSIX Unix Standartları, Eşzamanlılık & Çok İzleklilik, Düşük Seviyeli Bellek Yönetimi, Eşler Arası Öğrenme</div>
+      </div>
+    </section>
+
+    <!-- SERTİFİKALAR VE BAŞARILAR -->
+    <section>
+      <h2 class="section-title">SERTİFİKALAR VE BAŞARILAR</h2>
+      <div class="simple-list">
+        <div class="simple-item">• <strong>3.lük Ödülü:</strong> Bilişim Vadisi Web Hackathon Yarışması (2024)</div>
+        <div class="simple-item">• <strong>Green Software Practitioner Sertifikası:</strong> Green Software Foundation (2025)</div>
+        <div class="simple-item">• <strong>Yazılım Teknolojileri ve Yapay Zeka Program Sertifikası:</strong> GEN Academy (2024)</div>
+        <div class="simple-item">• <strong>C Programlama Dili Sertifikası:</strong> BTK Akademi (2023)</div>
+      </div>
+    </section>
+
+    <!-- DİLLER -->
+    <section>
+      <h2 class="section-title">DİLLER</h2>
+      <div class="simple-item">
+        • <strong>Türkçe:</strong> Anadil &nbsp;|&nbsp; • <strong>İngilizce:</strong> Profesyonel Çalışma Yetkinliği (B2)
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
