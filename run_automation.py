@@ -119,17 +119,22 @@ class JobAutomatorOrchestrator:
                 print(f"\n   [İnceleme] {position} @ {company}")
 
                 # İlan detayını çek
-                desc = self.scraper.get_job_description(job_url)
+                job_details = self.scraper.get_job_details(job_url)
+                desc = job_details.get("description", "")
+                is_easy_apply = job_details.get("is_easy_apply", False)
+
                 if not desc or len(desc) < 50:
-                    desc = f"{position} position at {company}. Requirements: Java, Spring Boot, Backend development."
+                    desc = f"{position} position at {company}. Requirements: Software engineering, systems and web development."
 
                 # Uyum analizini yap
                 analysis = self.matcher.analyze_job(position, desc)
                 score = analysis["match_score"]
                 matched_skills = analysis["matched_skills"]
                 missing_skills = analysis["missing_skills"]
+                is_senior = analysis.get("is_senior", False)
+                is_intern_or_grad = analysis.get("is_intern_or_grad", False)
 
-                print(f"   Uyum Puanı: %{score} (Baraj: %{min_score})")
+                print(f"   Uyum Puanı: %{score} (Baraj: %{min_score}) | Kıdemli: {is_senior} | Genç/Staj: {is_intern_or_grad} | Easy Apply: {is_easy_apply}")
 
                 job_info = {
                     "company": company,
@@ -140,6 +145,9 @@ class JobAutomatorOrchestrator:
                     "match_score": score,
                     "matched_skills": matched_skills,
                     "missing_skills": missing_skills,
+                    "is_senior": is_senior,
+                    "is_intern_or_grad": is_intern_or_grad,
+                    "is_easy_apply": is_easy_apply,
                 }
 
                 scanned_in_batch += 1
@@ -173,6 +181,11 @@ class JobAutomatorOrchestrator:
                 job_info["language"] = lang
                 job_info["recommended_cv_path"] = rec_pdf
                 job_info["highlighted_project"] = ai_review.get("highlighted_project", "")
+
+                # Eğer pozisyon açıkça Senior/Kıdemli ise, yüksek eşleşme çıksa bile BORDERLINE (Denenebilir) olarak sınıflandır
+                if is_senior and verdict == "RECOMMENDED":
+                    verdict = "BORDERLINE"
+                    ai_review["reasoning"] = f"Kıdemli / Senior pozisyon ({position}). Yüksek tecrübe beklense de güçlü teknik altyapı ile şans denenebilir."
 
                 if verdict == "SKIP":
                     job_info["status"] = "SKIPPED"
@@ -220,7 +233,6 @@ class JobAutomatorOrchestrator:
 
                 # 4. Başvuru Kanalı ve Zengin Telegram Bildirimi
                 matched_in_batch += 1
-                is_easy_apply = ("easy apply" in desc.lower() or "kolay başvuru" in desc.lower())
                 if is_easy_apply:
                     job_info["status"] = "READY_TO_APPLY"
                     job_info["pending_reason"] = "Easy Apply ilanı. AI Cover Letter ve Master ATS CV hazırlandı."
@@ -239,7 +251,7 @@ class JobAutomatorOrchestrator:
                 self.db.record_job(job_info)
                 processed_count += 1
 
-        # Döngü sonu özet bildirimi
+        # Döngü sonu özet bildirimi (Tek ve kesin rapor)
         if scanned_in_batch > 0:
             batch_summary_msg = f"""🏁 <b>TARAMA DÖNGÜSÜ TAMAMLANDI</b>
 📌 <b>Dilim:</b> {shift_label}
@@ -252,7 +264,6 @@ class JobAutomatorOrchestrator:
 
         summary = self.db.get_daily_summary()
         self._generate_markdown_report(summary)
-        self.notifier.notify_daily_summary(summary)
         return summary
 
     def _generate_markdown_report(self, summary: Dict[str, Any]):

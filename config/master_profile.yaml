@@ -34,18 +34,21 @@ skills:
   systems_programming:
     category_name: "Systems & Low-Level Development"
     items: ["Linux (Ubuntu)", "POSIX Unix Standards", "Multithreading", "Mutex Synchronization", "Heap Memory Allocation", "Process Control", "Signals Handling"]
+  mobile_app_dev:
+    category_name: "Mobile Application Development"
+    items: ["React Native", "Expo", "TypeScript", "Zustand", "Shopify Skia", "Cross-Platform Mobile Development", "Leaflet WebView"]
   web_frontend:
     category_name: "Web & Frontend Development"
     items: ["Astro", "TypeScript", "JavaScript (ES6)", "HTML5", "CSS3", "Responsive Design", "Static Site Generation (SSG)", "DOM Manipulation"]
   backend_databases:
     category_name: "Backend & Databases"
-    items: ["PostgreSQL", "MySQL", "Node.js (Express)", "Socket.IO", "WebSockets", "RESTful APIs", "Relational Database Modeling"]
+    items: ["NestJS", "Node.js (Express)", "Prisma ORM", "PostgreSQL", "Supabase", "MySQL", "Socket.IO", "WebSockets", "RESTful APIs", "Relational Database Modeling"]
   software_engineering_testing:
     category_name: "Software Engineering & Testing"
     items: ["Data Structures & Algorithms", "Object-Oriented Programming (OOP)", "Debugging (GDB, Valgrind)", "Unit Testing", "SDLC"]
   ai_augmented_engineering:
-    category_name: "AI-Augmented Engineering & Productivity"
-    items: ["AI Coding Agents (Antigravity, Claude, Cursor)", "Agentic Workflow Automation", "Prompt Engineering for Code Architecture", "Rapid Prototyping"]
+    category_name: "AI & LLM Integration"
+    items: ["Google Gemini API", "OpenAI API", "Multi-LLM Integration & Fallbacks", "AI Coding Agents", "Agentic Workflow Automation", "Prompt Engineering"]
   tools_infrastructure:
     category_name: "Tools & Infrastructure"
     items: ["Git", "GitHub", "Version Control", "Docker (Basics)", "Postman", "Linux CLI", "Active Directory", "TCP/IP Networking Fundamentals"]
@@ -82,6 +85,20 @@ experience:
         tags: ["bash", "automation", "linux", "scripting"]
 
 projects:
+  - id: "couple_os"
+    name: "CoupleOS — Real-Time Mobile & Multi-LLM Application"
+    technologies: "React Native (Expo), TypeScript, NestJS, Prisma, Socket.IO, Supabase PostgreSQL, Zustand, Shopify Skia, Gemini & OpenAI APIs"
+    tags: ["react native", "expo", "typescript", "nestjs", "prisma", "socket.io", "postgresql", "supabase", "zustand", "skia", "ai", "gemini", "openai", "mobile", "backend", "fullstack"]
+    bullets:
+      - text: "Engineered a cross-platform mobile application in React Native Expo featuring dark-mode glassmorphic UI, Zustand state management, and Shopify Skia interactive canvas."
+        tags: ["react native", "expo", "zustand", "skia", "typescript"]
+      - text: "Architected a scalable NestJS backend with Prisma ORM, Supabase PostgreSQL, and JWT/OTP authentication, managing synchronized paired-user state."
+        tags: ["nestjs", "prisma", "postgresql", "backend"]
+      - text: "Integrated real-time bidirectional events via Socket.IO for canvas stroke synchronization, live telemetry, and interactive shared sessions."
+        tags: ["socket.io", "websockets", "real-time"]
+      - text: "Integrated multi-LLM API pipelines (Google Gemini & OpenAI) with automated fallback and rate-limit guardrails for AI fortune readings and relationship insights."
+        tags: ["ai", "gemini", "openai", "llm", "apis"]
+
   - id: "minishell"
     name: "Minishell — POSIX Unix Shell"
     technologies: "C, POSIX System Calls, Process Control, Pipes & Redirections"

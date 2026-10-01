@@ -159,7 +159,16 @@ class TelegramNotifier:
         channel_badge = "⚡ <b>LINKEDIN KOLAY BAŞVURU</b>" if is_easy else "🌐 <b>ŞİRKET PORTALI / DIŞ BAŞVURU</b>"
         btn_text = "⚡ Kolay Başvur (LinkedIn)" if is_easy else "🌐 Şirket Portalında Başvur"
 
-        if category == "STRONG":
+        is_intern = job_info.get("is_intern_or_grad", False)
+        is_senior = job_info.get("is_senior", False)
+
+        if is_intern:
+            header = "🎓 <b>GENÇ YETENEK / STAJ FIRSATI</b>"
+            status_desc = "Staj, mezun veya genç yetenek programı. Doğrudan senin seviyene uygun yüksek öncelikli fırsat!"
+        elif is_senior:
+            header = "💼 <b>KIDEMLİ / DENENEBİLİR İLAN</b>"
+            status_desc = "İşveren kıdemli/deneyimli arasa da temel teknoloji yığının güçlü örtüştüğü için şansını deneyebilirsin."
+        elif category == "STRONG":
             header = "🎯 <b>GÜÇLÜ EŞLEŞME YAKALANDI!</b>"
             status_desc = "Bu ilan senin doğrulanmış yeteneklerinle yüksek oranda örtüşüyor."
         else:
@@ -182,7 +191,6 @@ class TelegramNotifier:
 ✅ <b>Eşleşen Yetenekler:</b> {matched_str}
 ⚠️ <b>İlanda İstenen Ekler:</b> {missing_str}
 🌟 <b>Öne Çıkarılan Proje:</b> {highlighted_proj or '42 Istanbul & branda.ist'}
-📄 <b>Eşlenen CV:</b> English Master ATS CV (92 Puanlık)
 
 ℹ️ <i>{status_desc}</i>
 """

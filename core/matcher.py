@@ -72,13 +72,23 @@ class JobMatcher:
             if re.search(pattern, combined_text):
                 matched_dict[official_name] = True
 
-        # Astro & TypeScript & React Native özel tespitleri
+        # Astro & TypeScript & React Native & NestJS & Prisma özel tespitleri
         if "astro" in combined_text:
             matched_dict["Astro"] = True
         if "typescript" in combined_text or "ts" in combined_text:
             matched_dict["TypeScript"] = True
-        if "react" in combined_text or "react native" in combined_text:
+        if "react native" in combined_text or "react-native" in combined_text:
             matched_dict["React Native"] = True
+        elif "react" in combined_text:
+            matched_dict["React"] = True
+        if "nestjs" in combined_text or "nest.js" in combined_text:
+            matched_dict["NestJS"] = True
+        if "prisma" in combined_text:
+            matched_dict["Prisma ORM"] = True
+        if "supabase" in combined_text:
+            matched_dict["Supabase"] = True
+        if "socket.io" in combined_text or "websocket" in combined_text:
+            matched_dict["Socket.IO"] = True
 
         matched_skills = list(matched_dict.keys())
 
@@ -95,9 +105,16 @@ class JobMatcher:
                 if not any(tech == k.lower() or tech in k.lower() for k in self.candidate_skills.keys()):
                     missing_skills.append(tech.upper() if len(tech) <= 4 else tech.title())
 
-        # 3. Puanlama Matematiği
+        # 3. Kıdem Seviyesi Tespiti (Senior / Lead / Intern / New Grad)
+        is_senior = bool(re.search(r'\b(senior|sr|lead|principal|staff|architect|manager|director)\b', title_lower))
+        is_intern_or_grad = any(k in title_lower or k in desc_lower[:400] for k in [
+            "intern", "staj", "stajyer", "trainee", "talent program", 
+            "genç yetenek", "graduate", "new grad", "entry level", "junior"
+        ])
+
+        # 4. Puanlama Matematiği
         title_score = 0
-        if any(role in title_lower for role in ["software engineer", "yazılım", "c++", "systems", "backend", "frontend", "web"]):
+        if any(role in title_lower for role in ["software engineer", "yazılım", "c++", "systems", "backend", "frontend", "web", "mobile", "ai"]):
             title_score = 35
         elif any(role in title_lower for role in ["full stack", "developer", "engineer", "it support", "destek"]):
             title_score = 25
@@ -105,38 +122,37 @@ class JobMatcher:
         matched_count = len(matched_skills)
         skill_score = min(matched_count * 10, 50)
 
-        # Staj / Genç Yetenek / New Grad / Junior Bonusu (+15 Puan)
-        is_junior_or_program = any(
-            k in combined_text for k in [
-                "intern", "staj", "stajyer", "trainee", "talent program", 
-                "genç yetenek", "graduate", "new grad", "junior", "bootcamp"
-            ]
-        )
-        bonus_score = 15 if is_junior_or_program else 0
+        # Staj / Genç Yetenek / New Grad Bonusu (+20 Puan)
+        bonus_score = 20 if is_intern_or_grad else 0
+
+        # Senior / Kıdemli Pozisyon Düşürmesi (-20 Puan)
+        senior_penalty = 20 if is_senior else 0
 
         # Eksik teknoloji cezası
-        penalty = min(len(missing_skills) * 3, 12)
+        penalty = min(len(missing_skills) * 3, 12) + senior_penalty
 
         total_score = max(0.0, min(100.0, float(title_score + skill_score + bonus_score - penalty)))
 
         # Deneyim Yılı Notu (3+ / 5+ yıl belirtilmiş mi?)
         experience_note = ""
         has_high_exp_req = bool(re.search(r'\b(3\+|4\+|5\+|3-5|5-7)\s*(year|yıl)', combined_text))
-        if has_high_exp_req:
-            experience_note = " (Şirket 3+ yıl deneyim belirtmiş olsa da teknoloji yığını güçlü eşleştiği için dahil edildi)"
+        if is_senior or has_high_exp_req:
+            experience_note = " [Kıdemli / Denenebilir İlan]"
 
-        min_score = self.criteria.get("min_match_score", 65.0)
+        min_score = self.criteria.get("min_match_score", 50.0)
         is_recommended = total_score >= min_score
 
         if is_recommended:
             fit_summary = f"Uyumlu (%{total_score:.1f}). Eşleşenler: {', '.join(matched_skills[:4])}.{experience_note}"
         else:
-            fit_summary = f"Eksik beceriler yoğun (%{total_score:.1f}). Arananlar: {', '.join(missing_skills[:3])}."
+            fit_summary = f"Eksik beceriler veya kıdem farkı yoğun (%{total_score:.1f}). Arananlar: {', '.join(missing_skills[:3])}."
 
         return {
             "match_score": round(total_score, 1),
             "matched_skills": matched_skills,
             "missing_skills": missing_skills,
             "is_recommended": is_recommended,
+            "is_senior": is_senior,
+            "is_intern_or_grad": is_intern_or_grad,
             "fit_summary": fit_summary
         }

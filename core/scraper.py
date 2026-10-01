@@ -101,8 +101,8 @@ class LinkedInScraper:
 
         return jobs
 
-    def get_job_description(self, job_url: str) -> str:
-        """İlan detay sayfasından gereksinimleri ve tam açıklamayı çeker."""
+    def get_job_details(self, job_url: str) -> Dict[str, Any]:
+        """İlan detay sayfasından gereksinimleri, açıklamayı ve Easy Apply durumunu çeker."""
         job_id_match = re.search(r'-(\d+)$', job_url.rstrip("/"))
         if not job_id_match:
             job_id_match = re.search(r'/view/(\d+)', job_url)
@@ -114,11 +114,23 @@ class LinkedInScraper:
                 req = urllib.request.Request(detail_url, headers=self.headers)
                 with urllib.request.urlopen(req, timeout=12) as resp:
                     html = resp.read().decode("utf-8", errors="ignore")
-                
+
+                # Easy Apply (Onsite) vs. Şirket Portalı (Offsite) Tespiti
+                is_onsite = bool(re.search(r'apply-link-simple_onsite|apply-link-onsite|guest-to-member-job-apply=enabled|easy[-_]?apply', html, re.I))
+                is_offsite = bool(re.search(r'offsite-apply-icon-svg|apply-link-offsite', html, re.I))
+                is_easy_apply = is_onsite and not is_offsite
+
                 clean_text = re.sub(r'<[^>]+>', ' ', html)
                 clean_text = ' '.join(clean_text.split())
-                return clean_text
+                return {
+                    "description": clean_text,
+                    "is_easy_apply": is_easy_apply
+                }
             except Exception:
                 pass
 
-        return ""
+        return {"description": "", "is_easy_apply": False}
+
+    def get_job_description(self, job_url: str) -> str:
+        """Geriye dönük uyumluluk için sadece açıklama metnini döner."""
+        return self.get_job_details(job_url)["description"]

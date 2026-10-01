@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import time
 import yaml
 import urllib.request
 import urllib.parse
@@ -125,11 +126,12 @@ Eğitim:
 - 42 İstanbul (Ecole 42), Sistem Programlama ve Yazılım Mühendisliği (Ocak 2025 - Devam Ediyor)
 İhbar Süresi: 0 Gün (Hemen Başlayabilir)
 Doğrulanmış Gerçek Projeler (%100 Tek Gerçeklik Kaynağı):
-1. branda.ist: Astro, TypeScript, SSG, Sharp, PurgeCSS ile 80+ sayfalık canlı ticari platform, 1.5s altı yükleme, programatik SEO.
-2. Minishell & Philosophers (42 Istanbul): C, POSIX Unix sistem çağrıları, fork/pipe/dup2, Valgrind sızıntısız bellek yönetimi, multithreading & mutex.
-3. NishChat (Üniversite Bitirme Projesi): Node.js, Express, Socket.IO, PostgreSQL ile gerçek zamanlı çift yönlü mesajlaşma.
-4. Beşiktaş Belediyesi IT Stajı: Active Directory, TCP/IP ağ yönetimi, donanım/işletim sistemi desteği, Bash otomasyon betikleri.
-KESİN KURAL: Adayın yapmadığı hiçbir sahte teknoloji (Spring Boot 3, Redis, AWS, Kubernetes, Docker, Flutter, Swift vb.) uydurulamaz. Yalnızca yukarıdaki doğrulanmış gerçek yetenekler ve projeler temel alınmalıdır.
+1. CoupleOS: React Native (Expo), TypeScript, NestJS, Prisma ORM, Socket.IO, Supabase PostgreSQL, Zustand, Shopify Skia. Çiftler için gerçek zamanlı mobil uygulama ve backend mimarisi. Google Gemini & OpenAI API'leri ile çoklu LLM entegrasyonu, hata toleranslı fallback mekanizmaları, canlı tuval çizimi ve anlık mesajlaşma.
+2. branda.ist: Astro, TypeScript, SSG, Sharp, PurgeCSS ile 80+ sayfalık canlı ticari platform, 1.5s altı yükleme, programatik SEO.
+3. Minishell & Philosophers (42 Istanbul): C, POSIX Unix sistem çağrıları, fork/pipe/dup2, Valgrind sızıntısız bellek yönetimi, multithreading & mutex senkronizasyonu.
+4. NishChat (Üniversite Bitirme Projesi): Node.js, Express, Socket.IO, PostgreSQL ile gerçek zamanlı çift yönlü mesajlaşma.
+5. Beşiktaş Belediyesi IT Stajı: Active Directory, TCP/IP ağ yönetimi, donanım/işletim sistemi desteği, Bash otomasyon betikleri.
+KESİN KURAL: Adayın yapmadığı hiçbir sahte teknoloji (Spring Boot 3, Redis, AWS, Kubernetes, Flutter, Swift vb.) uydurulamaz. Yalnızca yukarıdaki doğrulanmış gerçek yetenekler ve projeler temel alınmalıdır.
 """
 
         prompt = f"""
@@ -146,15 +148,17 @@ Aşağıda verilen aday profilini ve iş ilanını detaylı incele:
 GÖREVLERİN:
 1. İlan dilini ('tr' veya 'en') belirle.
 2. Pozisyonun adayın yetenekleriyle uyumunu değerlendir.
-   - İlan tamamen alakasız bir alandaysa (örn: Flutter, Swift/iOS, .NET/C#, SAP, Satış, Muhasebe) veya uyumsuzsa: verdict='SKIP', match_score < 50.
-   - İlanda 3+ yıl veya kıdemli yazsa bile adayın C/C++, Sistem, Backend (Node/SQL) veya Frontend (Astro/TS) temelleri örtüşüyorsa: verdict='BORDERLINE', match_score 50-69.
+   - İlan tamamen alakasız bir alandaysa (örn: Flutter, Swift/iOS native, .NET/C#, SAP, Satış, Muhasebe) veya uyumsuzsa: verdict='SKIP', match_score < 50.
+   - İlanda 3+ yıl veya kıdemli yazsa bile adayın C/C++, Sistem, Backend (Nest/Node/SQL), Mobil (React Native) veya Frontend (Astro/TS) temelleri örtüşüyorsa: verdict='BORDERLINE', match_score 50-69.
    - İlan staj, genç yetenek, junior, mezun veya adayın ana teknolojileriyle doğrudan örtüşüyorsa: verdict='RECOMMENDED', match_score >= 70.
-3. İlan için en uygun öne çıkarılacak projeyi seç (branda.ist, Minishell & Philosophers, NishChat veya Beşiktaş BT Stajı).
-4. Bu şirkete ve pozisyona özel, şablon kokmayan, samimi ve kurumsal bir Ön Yazı (Cover Letter) yaz:
+3. İlan için en uygun öne çıkarılacak projeyi seç (CoupleOS, branda.ist, Minishell & Philosophers, NishChat veya Beşiktaş BT Stajı).
+4. Bu şirkete ve pozisyona özel, ASLA YAPAY ZEKA ŞABLONU GİBİ DURMAYAN, samimi, akıcı ve profesyonel bir Ön Yazı (Cover Letter) yaz:
+   - KESİNLİKLE MADDE İŞARETİ VEYA LİSTE (- **...**) KULLANMA. Tamamen akıcı 3 doğal paragraftan oluşsun:
+     * 1. Paragraf: Pozisyona özel doğrudan giriş, Yazılım Mühendisliği mezuniyeti ve 42 İstanbul altyapısı.
+     * 2. Paragraf: Pozisyonun gereksinimlerine göre adayın en uygun projesindeki (CoupleOS, branda.ist veya 42 Minishell) somut mühendislik meydan okumasını ve çözümünü anlatan doğal bir paragraf.
+     * 3. Paragraf: İhbar süresinin bulunmadığını (0 gün - hemen başlayabilir), şirketin ekibine katılma motivasyonunu belirten profesyonel ve saygılı kapanış.
    - İlan Türkçe ise Türkçe, İngilizce ise İngilizce yaz.
-   - Adayın ihbar süresinin 0 gün olduğunu ve hemen başlayabileceğini belirt.
-   - Asla sahte teknoloji veya uydurma iddia içermesin.
-   - Hitap: "Sayın {company} İşe Alım Ekibi" (TR) veya "Dear Hiring Team at {company}" (EN).
+   - Hitap: "Sayın {company} İşe Alım Ekibi," (TR) veya "Dear Hiring Team at {company}," (EN).
    - İmza: Ömer Faruk Gökdaş ve iletişim bilgileri.
 
 Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür:
@@ -164,7 +168,7 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
   "language": "tr" | "en",
   "highlighted_project": "Seçilen projenin adı",
   "reasoning": "Neden bu kararın verildiğini açıklayan 1-2 cümlelik Türkçe veya İngilizce özet",
-  "custom_cover_letter": "Hazırlanan tam metin ön yazı"
+  "custom_cover_letter": "Hazırlanan tam metin 3 paragraflık akıcı ön yazı"
 }}
 """
         response_text = self._call_gemini_api(prompt)
@@ -224,14 +228,17 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
         lang = self._detect_language(title + " " + desc)
 
         # 3. Şirketin ve Pozisyonun Ana Odağını Belirle
-        is_frontend_web = any(k in desc_lower or k in title_lower for k in [
-            "frontend", "front-end", "web developer", "astro", "typescript", "javascript", "react", "html", "css", "ui developer", "web geliştirici"
+        is_mobile_or_ai = any(k in desc_lower or k in title_lower for k in [
+            "react native", "mobile", "mobil", "expo", "ios", "android", "ai", "yapay zeka", "llm", "prompt", "machine learning", "generative ai"
         ])
         is_systems_cpp = any(k in desc_lower or k in title_lower for k in [
-            "c++", "c developer", "embedded", "systems", "posix", "linux", "kernel", "low level", "gömülü"
+            "c++", "c developer", "embedded", "systems", "posix", "linux", "kernel", "low level", "gömülü", "network", "security"
         ])
         is_backend_node = any(k in desc_lower or k in title_lower for k in [
-            "node", "express", "backend", "back-end", "socket", "api", "database", "sql", "postgresql"
+            "nest", "node", "express", "backend", "back-end", "socket", "api", "database", "sql", "postgresql", "prisma"
+        ])
+        is_frontend_web = any(k in desc_lower or k in title_lower for k in [
+            "frontend", "front-end", "web developer", "astro", "typescript", "javascript", "react", "html", "css", "ui developer", "web geliştirici"
         ])
         is_it_support = any(k in desc_lower or k in title_lower for k in [
             "it support", "destek", "sistem uzman", "active directory", "help desk", "sistem yöneticisi", "ağ ve sistem"
@@ -254,50 +261,47 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
         is_borderline = (50.0 <= match_score < 70.0)
 
         if lang == "tr":
-            if is_frontend_web:
-                primary_focus = "Astro, TypeScript, Modern CSS/HTML, Sayfa Performansı ve Programatik SEO"
-                project_story = "Astro ve TypeScript kullanarak 80'den fazla sayfadan oluşan ticari branda.ist platformunu hayata geçirdim; Sharp ve PurgeCSS optimizasyonlarıyla sayfa yükleme sürelerini 1.5 saniyenin altına indirdim."
-                best_project = "branda.ist (Ticari Web Platformu — Astro & TypeScript)"
+            if is_mobile_or_ai:
+                project_story = "Geliştirdiğim CoupleOS projesinde React Native (Expo) ve NestJS mimarisi üzerinde çiftler için uçtan uca gerçek zamanlı bir mobil uygulama inşa ettim. Bu süreçte Zustand ile durum yönetimini kurarken, Socket.IO ile canlı veri senkronizasyonu sağladım ve Google Gemini ile OpenAI API'lerini entegre ederek hata toleranslı çoklu yapay zeka (LLM) veri akışları kurguladım."
+                best_project = "CoupleOS (Mobil & Çoklu LLM Mimarisi)"
             elif is_systems_cpp:
-                primary_focus = "C/C++, POSIX Standartları, Çoklu İş Parçacığı (Multithreading) ve Bellek Yönetimi"
-                project_story = "42 Istanbul sistem programlama eğitimi kapsamında Valgrind ile doğrulanmış sızıntısız Minishell Unix kabuğunu ve POSIX mutex senkronizasyonlu Dining Philosophers projelerini geliştirdim."
+                project_story = "42 Istanbul'un zorlu ve test odaklı sistem programlama eğitimi kapsamında Valgrind ile doğrulanmış, bellek sızıntısız Minishell Unix kabuğunu (POSIX sistem çağrıları, pipe, fork, sinyal yönetimi) ve POSIX mutex senkronizasyonlu Dining Philosophers eşzamanlılık projelerini geliştirdim."
                 best_project = "Minishell & Philosophers (42 Istanbul)"
             elif is_backend_node:
-                primary_focus = "Node.js, Express, Socket.IO ve PostgreSQL ile Gerçek Zamanlı Servisler"
-                project_story = "Nişantaşı Üniversitesi mezuniyet projem olan NishChat bünyesinde Node.js, Express ve PostgreSQL mimarisi üzerinde Socket.IO ile çift yönlü anlık mesajlaşma sistemi tasarladım."
-                best_project = "NishChat (Üniversite Bitirme Projesi)"
+                project_story = "Backend geliştirmede NestJS, Node.js ve PostgreSQL üzerinde ölçeklenebilir REST servisleri ve Socket.IO tabanlı gerçek zamanlı veri akışları tasarladım. CoupleOS ve NishChat projelerimde Prisma ORM ile ilişkisel veri modellemesi ve JWT kimlik doğrulama mimarilerini başarıyla uyguladım."
+                best_project = "CoupleOS & NishChat (Backend & Veritabanı)"
+            elif is_frontend_web:
+                project_story = "Astro ve TypeScript kullanarak 80'den fazla sayfadan oluşan ticari branda.ist platformunu hayata geçirdim; Sharp ve PurgeCSS optimizasyonlarıyla sayfa yükleme sürelerini 1.5 saniyenin altına indirirken programatik SEO altyapısını inşa ettim."
+                best_project = "branda.ist (Ticari Web Platformu — Astro & TypeScript)"
             elif is_it_support:
-                primary_focus = "Kurumsal BT Altyapısı, Active Directory, Ağ Tanılama ve Bash Otomasyonu"
-                project_story = "Beşiktaş Belediyesi Bilgi İşlem Müdürlüğü stajımda 500'den fazla iş istasyonunda Active Directory yönetimi, TCP/IP ağ sorun giderme ve rutin kontroller için Bash betikleri geliştirdim."
+                project_story = "Beşiktaş Belediyesi Bilgi İşlem Müdürlüğü stajımda 500'den fazla iş istasyonunda Active Directory yönetimi, TCP/IP ağ sorun giderme ve rutin operasyonların otomasyonu için Bash betikleri geliştirdim."
                 best_project = "BT Stajı (Beşiktaş Belediyesi)"
             else:
-                primary_focus = "Yazılım Mühendisliği Temelleri, C/C++ ve Modern Web Teknolojileri"
-                project_story = "Nişantaşı Üniversitesi Yazılım Mühendisliği teorik altyapımı 42 İstanbul'un zorlu peer-to-peer sistem geliştirme pratiğiyle birleştirerek sağlam algoritmik düşünme kabiliyeti edindim."
+                project_story = "Nişantaşı Üniversitesi Yazılım Mühendisliği teorik altyapımı 42 İstanbul'un zorlu peer-to-peer sistem geliştirme pratiğiyle birleştirerek sağlam algoritmik düşünme, temiz kod mimarisi ve sıfır harici kütüphane bağımlılığıyla problem çözme kabiliyeti edindim."
                 best_project = "42 Istanbul & Yazılım Mühendisliği Eğitimi"
 
             if is_intern_talent:
-                intent = f"Şirketiniz {company} bünyesinde açık bulunan {title} pozisyonuna başvurmaktan büyük memnuniyet duyuyorum. Nişantaşı Üniversitesi Yazılım Mühendisliği bölümünden Temmuz 2026'da başarıyla mezun oldum ve eş zamanlı olarak 42 İstanbul sistem programlama eğitimime devam etmekteyim."
+                p1 = f"Şirketiniz {company} bünyesinde açık bulunan {title} pozisyonuna başvurmaktan büyük memnuniyet duyuyorum. Nişantaşı Üniversitesi Yazılım Mühendisliği bölümünden Temmuz 2026'da mezun oldum ve eş zamanlı olarak 42 İstanbul sistem programlama eğitimime aktif biçimde devam etmekteyim."
             else:
-                intent = f"Şirketiniz {company} bünyesinde yer alan {title} pozisyonu için başvurumu sunmak isterim. Nişantaşı Üniversitesi Yazılım Mühendisliği lisans mezuniyetim ve 42 İstanbul sistem programlama deneyimimle mühendislik hedeflerinize katkı sunmak istiyorum."
+                p1 = f"Şirketiniz {company} bünyesinde yer alan {title} pozisyonu için başvurumu iletmek isterim. Yazılım Mühendisliği lisans mezuniyetim ve 42 İstanbul sistem programlama eğitimim süresince edindiğim mühendislik disipliniyle ekibinize somut katkı sunmayı hedefliyorum."
+
+            p2 = f"Eğitim ve proje süreçlerimde yüzeysel yaklaşımlar yerine mühendislik derinliğine, performans odaklı mimarilere ve temiz problem çözme disiplinine öncelik verdim. {project_story}"
+            p3 = f"Herhangi bir ihbar sürem (0 gün) bulunmamakta olup, ekibinize tam zamanlı olarak hemen katılabilirim. {company} ekibinin mühendislik hedefleri doğrultusunda sorumluluk almaktan heyecan duyuyorum. Detaylı özgeçmişim ekte yer almakta olup, niteliklerimi bir mülakatta aktarmaktan mutluluk duyarım."
 
             custom_cover_letter = f"""Sayın {company} İşe Alım Ekibi,
 
-{intent}
+{p1}
 
-Eğitim ve proje süreçlerimde yüzeysel yaklaşımlar yerine mühendislik derinliğine, temiz kod mimarisine ve sağlam problem çözme disiplinine odaklandım:
-- **Temel Teknik Yetkinlik:** {primary_focus} alanında güçlü ve doğrulanmış bilgi birikimi.
-- **Uygulamalı Proje Deneyimi:** {project_story}
-- **Mühendislik Standartları:** Harici kütüphane kısıtlamaları altında, sıfır bellek sızıntısı ve %100 test odaklı çalışan 42 İstanbul disiplini.
-- **Müsaitlik Durumu:** Herhangi bir ihbar sürem (0 gün) bulunmamakta olup, tam zamanlı olarak hemen başlayabilirim.
+{p2}
 
-{company} ekibinin nitelikli mühendislik vizyonu doğrultusunda sorumluluk almaktan ve değer üretmekten mutluluk duyarım. Detaylı İngilizce özgeçmişim ekte yer almakta olup, uygun görmeniz halinde detayları bir mülakatta aktarmayı arzu ederim.
+{p3}
 
 Saygılarımla,
 
 {candidate_name}
 {phone} | {email}
-{linkedin} | {github}
-"""
+{linkedin} | {github}"""
+
             if is_borderline:
                 reasoning = f"İlan {company} - {title} (Türkçe). Düşük ihtimal / sınırda eşleşme (%{match_score:.1f}). İlanda geçen ekler ({', '.join(missing_skills[:3]) if missing_skills else 'Ek deneyim'}) bulunuyor; temel yazılım birikimiyle denenebilir."
             else:
@@ -305,52 +309,47 @@ Saygılarımla,
 
         else:
             # English
-            if is_frontend_web:
-                primary_focus = "Astro, TypeScript, Static Site Generation (SSG), and Responsive Modern Web Architecture"
-                project_story = "Architected and published branda.ist, an 80+ page commercial platform using Astro and TypeScript, optimizing image pipelines with Sharp and PurgeCSS to achieve sub-1.5s initial page load times."
-                best_project = "branda.ist (Commercial Web Platform — Astro & TypeScript)"
+            if is_mobile_or_ai:
+                project_story = "In my flagship project CoupleOS, I architected a full-stack real-time mobile platform utilizing React Native (Expo) with Zustand on the frontend and NestJS with Prisma and Supabase PostgreSQL on the backend. I integrated multi-LLM pipelines combining Google Gemini and OpenAI APIs with graceful fallback mechanisms, alongside WebSocket-driven event streaming via Socket.IO."
+                best_project = "CoupleOS (Mobile & Multi-LLM Architecture)"
             elif is_systems_cpp:
-                primary_focus = "C/C++, POSIX Unix Standards, Memory Management, and Concurrency"
-                project_story = "At 42 Istanbul, I engineered Minishell (a POSIX-compliant Unix shell with custom process control, pipes, and Valgrind-verified leak-free heap management) and solved the classic Dining Philosophers problem using POSIX mutex synchronization and multithreading."
+                project_story = "Through the rigorous, test-driven curriculum at 42 Istanbul, I developed a strong foundation in low-level systems programming in C. My work includes Minishell (a POSIX-compliant Unix shell with process control, pipes, and Valgrind-verified zero-leak memory management) and multithreaded concurrency solutions using POSIX mutex synchronization in Dining Philosophers."
                 best_project = "Minishell & Philosophers (42 Istanbul)"
             elif is_backend_node:
-                primary_focus = "Node.js, Express, Socket.IO, and Relational Database Design"
-                project_story = "For my university graduation capstone project (NishChat), I designed and developed a real-time messaging platform using Node.js, Express, and PostgreSQL, implementing bidirectional WebSocket communication with Socket.IO."
-                best_project = "NishChat (Graduation Capstone Project)"
+                project_story = "On the backend, I design reliable REST services and real-time architectures using NestJS, Node.js, and PostgreSQL. In CoupleOS and NishChat, I implemented Prisma ORM relational modeling, JWT authentication, and bidirectional WebSocket communication with Socket.IO, prioritizing clean code architecture and data consistency."
+                best_project = "CoupleOS & NishChat (Backend & Real-Time APIs)"
+            elif is_frontend_web:
+                project_story = "I architected and published branda.ist, an 80+ page production commercial web platform utilizing Astro and TypeScript. By implementing automated component pipelines and optimizing assets with Sharp and PurgeCSS, I achieved sub-1.5s initial page load times alongside structured programmatic SEO."
+                best_project = "branda.ist (Commercial Web Platform — Astro & TypeScript)"
             elif is_it_support:
-                primary_focus = "Enterprise IT Infrastructure, Active Directory, and Shell Automation"
-                project_story = "During my IT internship at Besiktas Municipality, I administered enterprise Active Directory accounts, diagnosed TCP/IP networking across 500+ workstations, and developed custom Bash automation scripts for routine health checks."
+                project_story = "During my IT internship at Besiktas Municipality, I gained hands-on experience maintaining enterprise infrastructure across 500+ workstations, managing Active Directory user credentials, diagnosing TCP/IP network issues, and authoring Bash automation scripts for system diagnostics."
                 best_project = "IT Internship (Besiktas Municipality)"
             else:
-                primary_focus = "Software Engineering Principles, Data Structures, and Low-Level Foundations"
-                project_story = "Combining my Bachelor's degree in Software Engineering from Nisantasi University with the intensive peer-to-peer curriculum at 42 Istanbul, I have developed strong algorithmic thinking, proficiency in C/C++, and hands-on experience in modern software development."
-                best_project = "42 Istanbul & Software Engineering Degree"
+                project_story = "Combining my Bachelor's degree in Software Engineering from Nisantasi University with the intensive peer-to-peer curriculum at 42 Istanbul, I have developed strong algorithmic foundations, low-level problem-solving abilities, and practical full-stack development experience."
+                best_project = "42 Istanbul & Software Engineering Foundations"
 
             if is_intern_talent:
-                intent = f"I am writing to express my strong interest in the {title} opportunity at {company}. As a Software Engineering graduate from Nisantasi University (July 2026) and an active student in the rigorous 42 Istanbul curriculum, I am eager to contribute my technical foundation to your engineering team."
+                p1 = f"I am writing to express my strong interest in the {title} opportunity at {company}. Having graduated with a Bachelor's degree in Software Engineering from Nisantasi University (July 2026) while actively pursuing the rigorous 42 Istanbul systems programming curriculum, I am eager to contribute my technical foundation to your team."
             else:
-                intent = f"I am writing to apply for the {title} position at {company}. With a degree in Software Engineering and rigorous systems programming training at 42 Istanbul, I am excited about the opportunity to contribute to {company}'s engineering objectives."
+                p1 = f"I am writing to apply for the {title} position at {company}. With a solid foundation in Software Engineering and rigorous systems programming training from 42 Istanbul, I look forward to contributing dependable, clean code to your engineering objectives."
+
+            p2 = f"Throughout my academic and independent project work, I have focused on genuine engineering depth, performance optimization, and robust problem solving. {project_story}"
+            p3 = f"I am currently available to join your team immediately on a full-time basis, with no notice period (0 days). What excites me about {company} is the opportunity to tackle meaningful engineering challenges alongside experienced peers. Thank you for your time and consideration, and I welcome the opportunity to discuss my qualifications in an interview."
 
             custom_cover_letter = f"""Dear Hiring Team at {company},
 
-{intent}
+{p1}
 
-Throughout my education and projects, I have prioritized genuine engineering depth, low-level understanding, and clean problem solving:
-- **Core Technical Competence:** Strong proficiency in {primary_focus}.
-- **Practical Implementation:** {project_story}
-- **Engineering Discipline:** Trained through the 42 Istanbul methodology, which demands 100% test-driven verification, zero memory leaks, and independent problem-solving without external library crutches.
-- **Availability:** I am currently available to join immediately on a full-time basis, with no notice period (0 days).
+{p2}
 
-What attracts me to {company} is the opportunity to work alongside experienced engineers, tackle real-world challenges, and contribute dependable code.
-
-Thank you for your consideration. I welcome the opportunity to discuss my qualifications in an interview.
+{p3}
 
 Sincerely,
 
 {candidate_name}
 {phone} | {email}
-{linkedin} | {github}
-"""
+{linkedin} | {github}"""
+
             if is_borderline:
                 reasoning = f"İlan {company} - {title} (English). Borderline match (%{match_score:.1f}). Some preferred technologies ({', '.join(missing_skills[:3]) if missing_skills else 'Senior requirements'}) are stretch goals; worth trying based on strong core engineering foundations."
             else:
