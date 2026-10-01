@@ -28,8 +28,11 @@ class LinkedInScraper:
         jobs = []
         start = 0
         batch_size = 25
+        max_pages = 3
+        page = 0
 
-        while len(jobs) < limit:
+        while len(jobs) < limit and page < max_pages:
+            page += 1
             params = {
                 "keywords": keyword,
                 "location": location,
