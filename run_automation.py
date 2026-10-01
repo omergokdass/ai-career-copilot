@@ -1,8 +1,8 @@
 import sys
 import yaml
 from pathlib import Path
-from datetime import datetime
-from typing import Dict, Any, List
+from datetime import datetime, timezone, timedelta
+from typing import Dict, Any, List, Optional
 
 try:
     from dotenv import load_dotenv
@@ -61,8 +61,9 @@ class JobAutomatorOrchestrator:
         if shift_mode in shifts:
             return shifts[shift_mode]
 
-        # "auto" ise yerel saate göre vardiya seç (TR saati: 10:00, 12:00, 14:00, 16:00)
-        now_hour = datetime.now().hour
+        # "auto" ise Türkiye saatine (UTC+3) göre vardiya seç (TR saati: 10:00, 12:00, 14:00, 16:00)
+        tr_tz = timezone(timedelta(hours=3))
+        now_hour = datetime.now(tr_tz).hour
         if now_hour < 11:
             return shifts["1"]
         elif now_hour < 13:
