@@ -91,6 +91,8 @@ class JobAutomatorOrchestrator:
         scanned_in_batch = 0
         matched_in_batch = 0
         sample_skipped_sent = 0
+        new_jobs_found = 0
+        processed_count = 0
 
         for query in queries:
             print(f"\n🔍 Aranıyor: '{query}' ({locations[0]} | Filtre: {time_filter} | Sıralama: {sort_by})...")
