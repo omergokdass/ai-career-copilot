@@ -34,7 +34,7 @@ class AIReviewer:
             self.rules = yaml.safe_load(f)
             
         self.gemini_api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-        self.gemini_model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+        self.gemini_model = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash").strip()
 
     def review_job_deeply(self, job: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -81,10 +81,12 @@ class AIReviewer:
                     if parts:
                         return parts[0].get("text", "")
         except urllib.error.HTTPError as e:
-            # Model bulunamadıysa (404) veya 1.5-flash fallback dene
-            if e.code == 404 and model != "gemini-1.5-flash":
-                print(f"[AIReviewer] {model} bulunamadı, gemini-1.5-flash deneniyor...")
-                return self._call_gemini_api(prompt, model_name="gemini-1.5-flash")
+            # Model bulunamadıysa (404) sırayla fallback modelleri dene
+            if e.code == 404:
+                fallbacks = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-2.5-flash"]
+                for fb in fallbacks:
+                    if fb != model:
+                        return self._call_gemini_api(prompt, model_name=fb)
             print(f"[AIReviewer] Gemini API HTTP Hatası ({e.code}): {e.reason}")
         except Exception as e:
             print(f"[AIReviewer] Gemini API Bağlantı Hatası: {e}")
