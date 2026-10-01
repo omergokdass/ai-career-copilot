@@ -52,7 +52,6 @@ class JobAutomatorOrchestrator:
 
         chunk_size = max(1, (len(all_queries) + 3) // 4)
         shifts = {
-        shifts = {
             "1": (all_queries[0:chunk_size], "Vardiya 1 (10:00): Genç Yetenek, Staj & AI Engineering"),
             "2": (all_queries[chunk_size:chunk_size*2], "Vardiya 2 (12:00): C / C++ & Sistem Programlama"),
             "3": (all_queries[chunk_size*2:chunk_size*3], "Vardiya 3 (14:00): Junior Backend & Node.js"),
@@ -73,7 +72,7 @@ class JobAutomatorOrchestrator:
         else:
             return shifts["4"]
 
-    def run_daily_pipeline(self, max_jobs_per_query: int = 4, shift: str = "auto") -> Dict[str, Any]:
+    def run_daily_pipeline(self, max_jobs_per_query: int = 4, shift: str = "auto", time_filter_override: Optional[str] = None) -> Dict[str, Any]:
         all_queries = self.criteria.get("search_queries", ["Junior Software Engineer", "Backend Developer"])
         queries, shift_label = self._select_queries_for_shift(all_queries, shift)
 
@@ -84,7 +83,7 @@ class JobAutomatorOrchestrator:
 
         locations = self.criteria.get("target_locations", ["Istanbul, Turkey"])
         min_score = self.criteria.get("min_match_score", 50.0)
-        time_filter = self.criteria.get("time_filter", "r86400")
+        time_filter = time_filter_override if time_filter_override is not None else self.criteria.get("time_filter", "r86400")
         sort_by = self.criteria.get("sort_by", "DD")
         experience_levels = self.criteria.get("experience_levels", ["1", "2", "3"])
         jobs_limit = self.criteria.get("jobs_per_query", max_jobs_per_query)
@@ -298,7 +297,7 @@ class JobAutomatorOrchestrator:
 
         print(f"\n📄 Günlük rapor kaydedildi: {report_path}")
 
-    def run_if_needed_today(self, force: bool = False, shift: str = "auto") -> Dict[str, Any]:
+    def run_if_needed_today(self, force: bool = False, shift: str = "auto", time_filter_override: Optional[str] = None) -> Dict[str, Any]:
         """
         Bilgisayar sabah 09:30'da açık olmasa bile (örn: 12:00'de açılsa bile),
         günün taraması henüz yapılmamışsa veya vardiya bazlı ise çalışmasını sağlar.
@@ -310,20 +309,26 @@ class JobAutomatorOrchestrator:
             print(f"ℹ️ Bugünün ({today_str}) genel taraması zaten yapılmış. Mevcut rapor sunuluyor.")
             return self.db.get_daily_summary(today_str)
 
-        return self.run_daily_pipeline(shift=shift)
+        return self.run_daily_pipeline(shift=shift, time_filter_override=time_filter_override)
 
 if __name__ == "__main__":
     force_run = "--force" in sys.argv
+    wide_run = "--wide" in sys.argv
     shift_arg = "auto"
+    time_filter_arg = "" if wide_run else None
+
     for arg in sys.argv:
         if arg.startswith("--shift="):
             shift_arg = arg.split("=")[1].strip()
         elif arg == "--all":
             shift_arg = "all"
+        elif arg.startswith("--time-filter="):
+            time_filter_arg = arg.split("=")[1].strip()
+
     if "--shift" in sys.argv:
         idx = sys.argv.index("--shift")
         if idx + 1 < len(sys.argv):
             shift_arg = sys.argv[idx + 1].strip()
 
     automator = JobAutomatorOrchestrator()
-    automator.run_if_needed_today(force=force_run, shift=shift_arg)
+    automator.run_if_needed_today(force=force_run, shift=shift_arg, time_filter_override=time_filter_arg)
