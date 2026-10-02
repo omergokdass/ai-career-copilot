@@ -2,8 +2,11 @@ name: Daily Job Application Pipeline
 
 on:
   schedule:
-    # Günde 4 kez Türkiye saatiyle: 10:00, 12:00, 14:00, 16:00 (UTC 07:00, 09:00, 11:00, 13:00)
-    - cron: '0 7,9,11,13 * * *'
+    # Türkiye Saatiyle: 10:05, 12:05, 14:05, 16:05 (GitHub saat başı :00 kuyruk gecikmesini önlemek için :05)
+    - cron: '5 7 * * *'    # 10:05 TSI
+    - cron: '5 9 * * *'    # 12:05 TSI
+    - cron: '5 11 * * *'   # 14:05 TSI
+    - cron: '5 13 * * *'   # 16:05 TSI
   workflow_dispatch: # GitHub arayüzünden tek tıkla manuel tetikleme
 
 jobs:
