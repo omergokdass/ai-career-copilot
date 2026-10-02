@@ -2,8 +2,6 @@ name: Daily Job Application Pipeline
 
 on:
   schedule:
-    # 🧪 Canlı Test: 18:45 TSI (UTC 15:45)
-    - cron: '45 15 * * *'   # 18:45 TSI Test
     # Günlük Düzenli Vardiyalar (Türkiye Saatiyle: 10:05, 12:05, 14:05, 16:05)
     - cron: '5 7 * * *'    # 10:05 TSI
     - cron: '5 9 * * *'    # 12:05 TSI
