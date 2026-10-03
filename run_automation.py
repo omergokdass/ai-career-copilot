@@ -46,34 +46,28 @@ class JobAutomatorOrchestrator:
         self.notifier = TelegramNotifier()
 
     def _select_queries_for_shift(self, all_queries: List[str], shift_mode: str = "auto") -> tuple[List[str], str]:
-        """Arama sorgularını 4 zaman dilimine böler veya tümünü seçer."""
+        """Arama sorgularını 2 ana zaman dilimine böler (10:05 ve 14:05 TSI) veya tümünü seçer."""
         if shift_mode == "all" or len(all_queries) <= 6:
             return all_queries, "Tüm Kategoriler (Tam Tarama)"
 
-        chunk_size = max(1, (len(all_queries) + 3) // 4)
+        half = (len(all_queries) + 1) // 2
         shifts = {
-            "1": (all_queries[0:chunk_size], "Vardiya 1 (10:00): Genç Yetenek, Staj & AI Engineering"),
-            "2": (all_queries[chunk_size:chunk_size*2], "Vardiya 2 (12:00): C / C++ & Sistem Programlama"),
-            "3": (all_queries[chunk_size*2:chunk_size*3], "Vardiya 3 (14:00): Junior Backend & Node.js"),
-            "4": (all_queries[chunk_size*3:], "Vardiya 4 (16:00): Frontend, Web & IT Altyapı")
+            "1": (all_queries[0:half], "Vardiya 1 (10:05): Genç Yetenek, Staj, C/C++ & Sistem, Junior Backend"),
+            "2": (all_queries[half:], "Vardiya 2 (14:05): Frontend, Web, Mobil, AI Engineer & IT Destek")
         }
 
         if shift_mode in shifts:
             return shifts[shift_mode]
 
-        # "auto" ise Türkiye saatine (UTC+3) göre vardiya seç (TR saati: 10:00, 12:00, 14:00, 16:00)
+        # "auto" ise Türkiye saatine (UTC+3) göre vardiya seç (Saat 12:00 öncesi Vardiya 1, 12:00 sonrası Vardiya 2)
         tr_tz = timezone(timedelta(hours=3))
         now_hour = datetime.now(tr_tz).hour
-        if now_hour < 11:
+        if now_hour < 12:
             return shifts["1"]
-        elif now_hour < 13:
-            return shifts["2"]
-        elif now_hour < 15:
-            return shifts["3"]
         else:
-            return shifts["4"]
+            return shifts["2"]
 
-    def run_daily_pipeline(self, max_jobs_per_query: int = 4, shift: str = "auto", time_filter_override: Optional[str] = None) -> Dict[str, Any]:
+    def run_daily_pipeline(self, max_jobs_per_query: Optional[int] = None, shift: str = "auto", time_filter_override: Optional[str] = None) -> Dict[str, Any]:
         all_queries = self.criteria.get("search_queries", ["Junior Software Engineer", "Backend Developer"])
         queries, shift_label = self._select_queries_for_shift(all_queries, shift)
 
@@ -87,7 +81,7 @@ class JobAutomatorOrchestrator:
         time_filter = time_filter_override if time_filter_override is not None else self.criteria.get("time_filter", "r86400")
         sort_by = self.criteria.get("sort_by", "DD")
         experience_levels = self.criteria.get("experience_levels", ["1", "2", "3"])
-        jobs_limit = self.criteria.get("jobs_per_query", max_jobs_per_query)
+        jobs_limit = max_jobs_per_query if max_jobs_per_query is not None else self.criteria.get("jobs_per_query", None)
 
         scanned_in_batch = 0
         matched_in_batch = 0
@@ -96,7 +90,8 @@ class JobAutomatorOrchestrator:
         processed_count = 0
 
         for query in queries:
-            print(f"\n🔍 Aranıyor: '{query}' ({locations[0]} | Filtre: {time_filter} | Sıralama: {sort_by})...")
+            limit_str = f"Limit: {jobs_limit}" if jobs_limit else "Tüm Son 24 Saat İlanları"
+            print(f"\n🔍 Aranıyor: '{query}' ({locations[0]} | Filtre: {time_filter} | {limit_str})...")
             found_jobs = self.scraper.search_jobs(
                 query, 
                 location=locations[0], 
@@ -124,8 +119,23 @@ class JobAutomatorOrchestrator:
                 desc = job_details.get("description", "")
                 is_easy_apply = job_details.get("is_easy_apply", False)
 
-                if not desc or len(desc) < 50:
-                    desc = f"{position} position at {company}. Requirements: Software engineering, systems and web development."
+                if not desc or len(desc) < 40:
+                    print(f"   ⚠️ İlan açıklaması LinkedIn'den çekilemedi veya erişim kısıtlı. Güvenlik gereği atlanıyor.")
+                    job_info = {
+                        "company": company,
+                        "position": position,
+                        "job_url": job_url,
+                        "location": job.get("location", ""),
+                        "platform": "LinkedIn",
+                        "match_score": 0.0,
+                        "matched_skills": [],
+                        "missing_skills": ["Açıklama Alınamadı"],
+                        "status": "SKIPPED",
+                        "pending_reason": "İlan açıklaması LinkedIn tarafından sunulmadı (erişim kısıtı / boş metin).",
+                        "notes": "Eksik açıklama"
+                    }
+                    self.db.record_job(job_info)
+                    continue
 
                 # Uyum analizini yap
                 analysis = self.matcher.analyze_job(position, desc)
@@ -172,7 +182,8 @@ class JobAutomatorOrchestrator:
                     "description": desc,
                     "matched_skills": matched_skills,
                     "match_score": score,
-                    "missing_skills": missing_skills
+                    "missing_skills": missing_skills,
+                    "is_easy_apply": is_easy_apply
                 }
                 ai_review = self.ai_reviewer.review_job_deeply(ai_job_payload)
 
@@ -223,25 +234,28 @@ class JobAutomatorOrchestrator:
                     _, pdf_path = self.builder.build_cv(job_info)
                     job_info["tailored_cv_path"] = str(pdf_path)
 
-                # 3. Özgün AI Cover Letter kaydetme
-                clean_comp = self.builder._sanitize_filename(company)
-                clean_pos = self.builder._sanitize_filename(position)
-                cl_path = OUTPUT_DIR / "cover_letters" / f"Cover_Letter_{clean_comp}_{clean_pos}.txt"
-                with open(cl_path, "w", encoding="utf-8") as f:
-                    f.write(ai_review.get("custom_cover_letter", ""))
-                job_info["cover_letter_path"] = str(cl_path)
+                # 3. Özgün AI Cover Letter kaydetme (SADECE Easy Apply için)
+                if is_easy_apply and ai_review.get("custom_cover_letter"):
+                    clean_comp = self.builder._sanitize_filename(company)
+                    clean_pos = self.builder._sanitize_filename(position)
+                    cl_path = OUTPUT_DIR / "cover_letters" / f"Cover_Letter_{clean_comp}_{clean_pos}.txt"
+                    with open(cl_path, "w", encoding="utf-8") as f:
+                        f.write(ai_review.get("custom_cover_letter", ""))
+                    job_info["cover_letter_path"] = str(cl_path)
+                else:
+                    job_info["cover_letter_path"] = ""
                 job_info["notes"] = f"{analysis['fit_summary']} | AI: {ai_review.get('reasoning')} | Öne Çıkan: {ai_review.get('highlighted_project')}"
 
                 # 4. Başvuru Kanalı ve Zengin Telegram Bildirimi
                 matched_in_batch += 1
                 if is_easy_apply:
                     job_info["status"] = "READY_TO_APPLY"
-                    job_info["pending_reason"] = "Easy Apply ilanı. AI Cover Letter ve Master ATS CV hazırlandı."
-                    print(f"   ⚡ [KOLAY BAŞVURU PAKETİ HAZIR] Özgün ({lang.upper()}) Cover Letter ve Master ATS CV hazır.")
+                    job_info["pending_reason"] = "Easy Apply ilanı. AI Mikro Ön Yazı (Maks. 400 Karakter) ve Master ATS CV hazırlandı."
+                    print(f"   ⚡ [KOLAY BAŞVURU PAKETİ HAZIR] 400 Karakter Ön Yazı ve Master ATS CV hazır.")
                 else:
                     job_info["status"] = "NEEDS_REVIEW"
-                    job_info["pending_reason"] = "İşveren şirket portalına yönlendiriyor. CV ve özgün Cover Letter hazır."
-                    print(f"   🌐 [ŞİRKET PORTALI PAKETİ HAZIR] Şirket dış portalına yönlendirme. CV ve Cover Letter hazır.")
+                    job_info["pending_reason"] = "İşveren şirket portalına yönlendiriyor. Master ATS CV ile başvuru yapılabilir."
+                    print(f"   🌐 [ŞİRKET PORTALI PAKETİ HAZIR] Şirket dış portalına yönlendirme. Master ATS CV hazır.")
 
                 self.notifier.notify_job_card(
                     job_info, 

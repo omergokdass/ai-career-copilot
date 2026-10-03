@@ -2,21 +2,35 @@ name: Daily Job Application Pipeline
 
 on:
   schedule:
-    # Günlük Düzenli Vardiyalar (Türkiye Saatiyle: 10:05, 12:05, 14:05, 16:05)
-    - cron: '5 7 * * *'    # 10:05 TSI
-    - cron: '5 9 * * *'    # 12:05 TSI
-    - cron: '5 11 * * *'   # 14:05 TSI
-    - cron: '5 13 * * *'   # 16:05 TSI
-  workflow_dispatch: # GitHub arayüzünden tek tıkla manuel tetikleme
+    # 2 Günlük Vardiya (Türkiye Saati: 10:05 ve 14:05 TSI)
+    - cron: '5 7 * * *'    # 10:05 TSI (UTC 07:05) -> Vardiya 1
+    - cron: '5 11 * * *'   # 14:05 TSI (UTC 11:05) -> Vardiya 2
+  workflow_dispatch:
+    inputs:
+      shift:
+        description: 'Çalıştırılacak Vardiya'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - 'auto'
+          - '1'
+          - '2'
+          - 'all'
+
+permissions:
+  contents: write
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Repoyu Klonla
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Python Kurulumu
         uses: actions/setup-python@v5
@@ -33,6 +47,25 @@ jobs:
         run: |
           python -m playwright install --with-deps chromium
 
+      - name: Vardiya Belirle
+        id: select-shift
+        run: |
+          INPUT_SHIFT="${{ inputs.shift }}"
+          SCHEDULE="${{ github.event.schedule }}"
+
+          if [ -n "$INPUT_SHIFT" ] && [ "$INPUT_SHIFT" != "auto" ]; then
+            CHOSEN_SHIFT="$INPUT_SHIFT"
+          elif [ "$SCHEDULE" = "5 7 * * *" ]; then
+            CHOSEN_SHIFT="1"
+          elif [ "$SCHEDULE" = "5 11 * * *" ]; then
+            CHOSEN_SHIFT="2"
+          else
+            CHOSEN_SHIFT="auto"
+          fi
+
+          echo "chosen_shift=$CHOSEN_SHIFT" >> $GITHUB_OUTPUT
+          echo "Seçilen Vardiya: $CHOSEN_SHIFT"
+
       - name: Günlük İlan Taramasını ve AI Analizini Çalıştır
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -41,7 +74,20 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_ENABLED: 'true'
         run: |
-          python run_automation.py --force --shift auto
+          python run_automation.py --force --shift ${{ steps.select-shift.outputs.chosen_shift }}
+
+      - name: Veritabanını Repoya Kaydet (Deduplication / Kalıcılık)
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add applications.db
+          if git diff --staged --quiet; then
+            echo "Veritabanında yeni değişiklik yok."
+          else
+            git commit -m "chore(db): update applications database [skip ci]"
+            git push origin main
+          fi
 
       - name: Oluşan Başvuru Raporlarını ve DB'yi Kaydet (Artifact)
         uses: actions/upload-artifact@v4

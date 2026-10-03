@@ -1,62 +1,41 @@
 # ==============================================================================
-# İŞ ARAMA KRİTERLERİ (ÖMER FARUK GÖKDAŞ - GERÇEK YETENEK VE EĞİTİM ODAKLI)
+# İŞ ARAMA KRİTERLERİ (ÖMER FARUK GÖKDAŞ - 2 VARDİYALI & KISITLAMASIZ SON 24 SAAT)
 # ==============================================================================
 
 search_queries:
-  # 1. Genç Yetenek, Staj ve Yetiştirme Programları (En Yüksek Kabul Şansı)
-  - "Genç Yetenek Yazılım"
+  # ============================================================================
+  # VARDİYA 1 (10:05 TSI): Genç Yetenek, Staj, C/C++ & Sistem, Junior Backend
+  # ============================================================================
   - "Software Engineering Intern"
-  - "Yazılım Stajyeri"
-  - "Graduate Software Engineer"
-  - "Talent Program Software"
-  - "New Grad Software Engineer"
-
-  # 2. C / C++ & Sistem Programlama (En Güçlü 42 Istanbul Yetenekleri)
-  - "C++ Developer"
-  - "Junior C++ Developer"
-  - "C Developer"
-  - "Embedded Software Engineer"
-  - "Systems Software Engineer"
-  - "Linux Software Engineer"
-
-  # 3. Junior & Giriş Seviyesi Backend / Genel Yazılım
+  - "Genç Yetenek Yazılım"
   - "Junior Software Engineer"
-  - "Junior Software Developer"
+  - "Junior C++ Developer"
+  - "C++ Developer"
   - "Junior Backend Developer"
-  - "Junior Node.js Developer"
-  - "Software Engineer"
-  - "Backend Developer"
 
-  # 4. Frontend & Web Geliştirme (Astro, TypeScript, React Native & branda.ist Odaklı)
+  # ============================================================================
+  # VARDİYA 2 (14:05 TSI): Frontend & Web, Mobil (React Native), AI & IT Destek
+  # ============================================================================
   - "Junior Frontend Developer"
-  - "Frontend Developer"
-  - "Web Developer"
-  - "Junior Web Developer"
   - "TypeScript Developer"
-
-  # 5. IT / Sistem & Altyapı Destek (Beşiktaş Belediyesi Deneyimi Odaklı)
-  - "IT Support Specialist"
-  - "Sistem Destek Uzmanı"
-
-  # 6. AI & Geliştirici / Yapay Zeka Destekli Mühendislik (GEN Academy & AI Agent Deneyimi)
-  - "AI Software Engineer"
+  - "React Native Developer"
   - "Junior AI Engineer"
   - "AI Developer"
-  - "Junior AI Developer"
-  - "Prompt Engineer"
-  - "Generative AI Developer"
+  - "IT Support Specialist"
 
 target_locations:
   - "Istanbul, Turkey"
   - "Turkey"
   - "Remote"
 
-time_filter: "r86400"
-sort_by: "DD"
+time_filter: "r86400"  # Son 24 saatteki tüm ilanlar
+sort_by: "DD"          # En güncel ilanlar öncelikli (Date Descending)
 experience_levels: ["1", "2", "3"]
 work_types: ["Remote", "Hybrid", "On-site"]
 
 min_match_score: 50.0
-jobs_per_query: 4
-daily_max_applications: 25
-daily_max_inspections: 60
+
+# İlan sayısı kısıtlaması kaldırıldı (null: son 24 saatteki tüm ilanlar taranır)
+jobs_per_query: null
+daily_max_applications: 35
+daily_max_inspections: 120

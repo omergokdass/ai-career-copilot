@@ -103,32 +103,34 @@ class TestJobAutomatorSystem(unittest.TestCase):
         from core.ai_reviewer import AIReviewer
         reviewer = AIReviewer()
 
-        # Türkçe Frontend İlanı
+        # Türkçe Frontend İlanı (Easy Apply)
         tr_job = {
             "title": "Frontend Geliştirici",
             "company": "ModaTeknoloji",
-            "description": "Şirketimizde görev alacak, Astro, TypeScript, modern CSS ve web performansı konularında deneyimli, aranan niteliklere sahip adaylar."
+            "description": "Şirketimizde görev alacak, Astro, TypeScript, modern CSS ve web performansı konularında deneyimli, aranan niteliklere sahip adaylar.",
+            "is_easy_apply": True
         }
-        tr_review = reviewer.review_job_deeply(tr_job)
+        tr_review = reviewer._heuristic_review(tr_job)
         self.assertEqual(tr_review["verdict"], "RECOMMENDED")
         self.assertEqual(tr_review["language"], "tr")
         self.assertIn("branda.ist", tr_review["custom_cover_letter"])
-        self.assertIn("Sayın ModaTeknoloji İşe Alım Ekibi", tr_review["custom_cover_letter"])
+        self.assertIn("Sayın ModaTeknoloji Ekibi", tr_review["custom_cover_letter"])
         # Sabit Kural: İlan Türkçe de olsa İngilizce Master ATS CV atanmalıdır
         self.assertTrue(Path(tr_review["recommended_cv_pdf"]).exists())
         self.assertIn("Omer_Faruk_Gokdas_CV_Master_ATS.pdf", tr_review["recommended_cv_pdf"])
 
-        # İngilizce C/C++ Systems İlanı
+        # İngilizce C/C++ Systems İlanı (Easy Apply)
         en_job = {
             "title": "Junior Systems Engineer",
             "company": "RoboSystems Inc",
-            "description": "Looking for a systems engineer with solid knowledge of C/C++, POSIX standards, multithreading, and Linux operating systems."
+            "description": "Looking for a systems engineer with solid knowledge of C/C++, POSIX standards, multithreading, and Linux operating systems.",
+            "is_easy_apply": True
         }
-        en_review = reviewer.review_job_deeply(en_job)
+        en_review = reviewer._heuristic_review(en_job)
         self.assertEqual(en_review["verdict"], "RECOMMENDED")
         self.assertEqual(en_review["language"], "en")
         self.assertIn("Minishell", en_review["custom_cover_letter"])
-        self.assertIn("Dear Hiring Team at RoboSystems Inc", en_review["custom_cover_letter"])
+        self.assertIn("Dear RoboSystems Inc Team", en_review["custom_cover_letter"])
         self.assertTrue(Path(en_review["recommended_cv_pdf"]).exists())
         self.assertIn("Omer_Faruk_Gokdas_CV_Master_ATS.pdf", en_review["recommended_cv_pdf"])
 
@@ -168,9 +170,10 @@ class TestJobAutomatorSystem(unittest.TestCase):
             "company": "Beta Cloud Labs",
             "description": "Looking for a junior engineer familiar with Node.js, C++ foundations. Nice to have: AWS, Docker, Kubernetes.",
             "match_score": 58.0,
-            "missing_skills": ["AWS", "Docker", "Kubernetes"]
+            "missing_skills": ["AWS", "Docker", "Kubernetes"],
+            "is_easy_apply": True
         }
-        res = reviewer.review_job_deeply(borderline_job)
+        res = reviewer._heuristic_review(borderline_job)
         self.assertEqual(res["verdict"], "BORDERLINE")
         self.assertIn("Borderline match", res["reasoning"])
 
@@ -193,11 +196,13 @@ class TestJobAutomatorSystem(unittest.TestCase):
             "company": "NextGen Systems",
             "description": "Seeking Junior Backend Developer with experience in C/C++, Node.js and PostgreSQL.",
             "match_score": 85.0,
-            "missing_skills": []
+            "missing_skills": [],
+            "is_easy_apply": True
         }
-        res = reviewer.review_job_deeply(sample_job)
+        res = reviewer._heuristic_review(sample_job)
         self.assertIn(res["verdict"], ["RECOMMENDED", "BORDERLINE", "SKIP"])
-        self.assertTrue(len(res["custom_cover_letter"]) > 100)
+        self.assertTrue(len(res["custom_cover_letter"]) > 50)
+        self.assertLessEqual(len(res["custom_cover_letter"]), 400)
         self.assertIn("Omer Faruk Gokdas", res["custom_cover_letter"])
         self.assertTrue(Path(res["recommended_cv_pdf"]).exists())
 

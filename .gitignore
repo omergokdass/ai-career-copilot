@@ -26,4 +26,6 @@ output/DAILY_REPORT_*.md
 
 # Local SQLite databases
 *.db
+!applications.db
 !tests/*.db
+

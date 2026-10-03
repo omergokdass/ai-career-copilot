@@ -140,19 +140,19 @@ class TelegramNotifier:
         category: 'STRONG' (Güçlü Eşleşme) veya 'BORDERLINE' (Düşük İhtimal / Denenebilir)
         """
         import html
-        company = job_info.get("company", "Bilinmeyen Şirket")
-        position = job_info.get("position", "Pozisyon")
+        company = html.escape(str(job_info.get("company", "Bilinmeyen Şirket")))
+        position = html.escape(str(job_info.get("position", "Pozisyon")))
         score = job_info.get("match_score", 0.0)
         job_url = job_info.get("job_url", "")
-        location = job_info.get("location", "Belirtilmemiş")
+        location = html.escape(str(job_info.get("location", "Belirtilmemiş")))
         matched_skills = job_info.get("matched_skills", [])
         missing_skills = job_info.get("missing_skills", [])
-        highlighted_proj = job_info.get("highlighted_project", "")
+        highlighted_proj = html.escape(str(job_info.get("highlighted_project", "")))
         lang = job_info.get("language", "en").upper()
         status = job_info.get("status", "READY_TO_APPLY")
 
-        matched_str = ", ".join(matched_skills[:6]) if matched_skills else "Genel Yazılım / Algoritma"
-        missing_str = ", ".join(missing_skills[:4]) if missing_skills else "Kritik eksik yok"
+        matched_str = html.escape(", ".join(matched_skills[:6])) if matched_skills else "Genel Yazılım / Algoritma"
+        missing_str = html.escape(", ".join(missing_skills[:4])) if missing_skills else "Kritik eksik yok"
 
         # Başvuru Kanalı Etiketi
         is_easy = (status == "READY_TO_APPLY")
@@ -211,12 +211,12 @@ class TelegramNotifier:
 
         if cl_text:
             safe_cl = html.escape(cl_text)
-            cl_block = f"\n📋 <b>Özel Ön Yazı (Kopyalamak için metne dokunun):</b>\n<code>{safe_cl}</code>"
+            cl_block = f"\n📋 <b>Kolay Başvuru Notu (Maks. 400 Karakter - Kopyalamak için dokunun):</b>\n<code>{safe_cl}</code>"
             if len(message + cl_block) < 3900:
                 sent = self.send_message((message + cl_block).strip(), reply_markup=reply_markup)
             else:
                 sent = self.send_message(message.strip(), reply_markup=reply_markup)
-                cl_msg = f"📋 <b>Hazırlanan Ön Yazı ({lang} - Kopyalamak için dokunun):</b>\n<code>{safe_cl}</code>"
+                cl_msg = f"📋 <b>Kolay Başvuru Notu ({lang} - Kopyalamak için dokunun):</b>\n<code>{safe_cl}</code>"
                 self.send_message(cl_msg.strip())
         else:
             sent = self.send_message(message.strip(), reply_markup=reply_markup)
@@ -260,17 +260,19 @@ class TelegramNotifier:
 
     def notify_skipped_sample(self, job_info: Dict[str, Any], reason: str) -> bool:
         """Kullanıcının botun eleme mantığını denetleyebilmesi için örnek elenen ilan gönderir."""
-        company = job_info.get("company", "Şirket")
-        position = job_info.get("position", "Pozisyon")
+        import html
+        company = html.escape(str(job_info.get("company", "Şirket")))
+        position = html.escape(str(job_info.get("position", "Pozisyon")))
         job_url = job_info.get("job_url", "")
         score = job_info.get("match_score", 0.0)
+        safe_reason = html.escape(str(reason))
 
         msg = f"""🚫 <b>[ÖRNEK ELENEN İLAN — TEST/DENETİM]</b>
 
 🏢 <b>Şirket:</b> {company}
 💼 <b>Pozisyon:</b> {position}
 📊 <b>Uyum Puanı:</b> %{score:.1f}
-❌ <b>Elenme Gerekçesi:</b> {reason}
+❌ <b>Elenme Gerekçesi:</b> {safe_reason}
 
 ℹ️ <i>Botun doğru filtreleme yaptığını teyit edebilmeniz için örnek olarak sunulmuştur.</i>
 """

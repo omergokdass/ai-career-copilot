@@ -20,23 +20,34 @@ class JobMatcher:
 
     def _extract_all_candidate_skills(self) -> Dict[str, str]:
         """Adayın tüm gerçek yeteneklerini küçük harf -> resmi ad haritası olarak çıkarır."""
+        GENERIC_STOP_WORDS = {
+            "support", "systems", "production", "ai", "operations", "troubleshooting",
+            "infrastructure", "performance", "security", "testing", "ui", "dom", "css",
+            "apis", "llm", "development", "web", "mobile", "fullstack"
+        }
         skills_map = {}
         for cat_data in self.profile["skills"].values():
             for item in cat_data["items"]:
                 clean_name = item.split("(")[0].strip()
-                skills_map[clean_name.lower()] = clean_name
-                skills_map[item.lower()] = item
+                if clean_name.lower() not in GENERIC_STOP_WORDS:
+                    skills_map[clean_name.lower()] = clean_name
+                if item.lower() not in GENERIC_STOP_WORDS:
+                    skills_map[item.lower()] = item
                 if "(" in item:
                     sub_items = item.split("(")[1].replace(")", "").split(",")
                     for sub in sub_items:
-                        skills_map[sub.strip().lower()] = sub.strip()
+                        sub_clean = sub.strip()
+                        if sub_clean.lower() not in GENERIC_STOP_WORDS:
+                            skills_map[sub_clean.lower()] = sub_clean
 
         for exp in self.profile["experience"]:
             for tag in exp.get("tags", []):
-                skills_map[tag.lower()] = tag
+                if tag.lower() not in GENERIC_STOP_WORDS:
+                    skills_map[tag.lower()] = tag
         for proj in self.profile["projects"]:
             for tag in proj.get("tags", []):
-                skills_map[tag.lower()] = tag
+                if tag.lower() not in GENERIC_STOP_WORDS:
+                    skills_map[tag.lower()] = tag
 
         return skills_map
 
@@ -50,44 +61,65 @@ class JobMatcher:
         desc_lower = job_description.lower()
         combined_text = f"{title_lower} {desc_lower}"
 
-        # 1. Alakasız alan filtrelemesi (Doğrudan elenmesi gerekenler)
-        IRRELEVANT_TITLES = [
-            ".net", "c#", "flutter", "ios developer", "android developer",
-            "ui/ux", "graphic designer", "sap ", "sales", "pazarlama", "muhasebe", "insan kaynakları"
+        # 1. Kesinlikle elenmesi gereken yazılım/mühendislik dışı meslekler (Kimya, Hukuk, Tıp, Satış vb.)
+        HARD_EXCLUDED_TITLES = [
+            "hukuk", "legal", "lawyer", "avukat", "chemist", "kimya", "kimyager",
+            "pharmacist", "eczacı", "doktor", "doctor", "hemşire", "nurse",
+            "inşaat", "civil engineer", "makine mühendisi", "mechanical engineer",
+            "muhasebe", "accountant", "accounting", "mali müşavir", "satış", "sales rep",
+            "sales representative", "pazarlama", "marketing specialist", "insan kaynakları",
+            "recruiter", "talent acquisition", "graphic designer", "ui/ux designer"
         ]
-        # Eğer başlıkta bunlardan biri varsa ve adayın ana alanları yoksa düşük puan ver
-        if any(irr in title_lower for irr in IRRELEVANT_TITLES) and not any(k in title_lower for k in ["c++", "c ", "systems", "backend", "frontend", "web", "software", "yazılım"]):
+        if any(exc in title_lower for exc in HARD_EXCLUDED_TITLES):
             return {
-                "match_score": 40.0,
+                "match_score": 0.0,
                 "matched_skills": [],
-                "missing_skills": ["Alan Dışı"],
+                "missing_skills": ["Alan Dışı / Yazılım Dışı Meslek"],
                 "is_recommended": False,
-                "fit_summary": "Adayın uzmanlık alanı (Yazılım / Sistem / Web / Backend) dışındaki pozisyon."
+                "is_senior": False,
+                "is_intern_or_grad": False,
+                "fit_summary": f"Yazılım/Sistem dışı veya hedeflenmeyen alan pozisyonu: '{job_title}'."
             }
 
-        # 2. Yetenek Eşleşmesi
+        # 2. Adayın uzmanlık alanı dışındaki yazılım teknolojileri (.NET, Flutter, iOS vb.)
+        IRRELEVANT_TECH = [
+            ".net", "c#", "flutter", "ios developer", "android developer",
+            "sap ", "salesforce", "abap"
+        ]
+        if any(irr in title_lower for irr in IRRELEVANT_TECH) and not any(k in title_lower for k in ["c++", "c ", "systems", "backend", "frontend", "web", "software", "yazılım"]):
+            return {
+                "match_score": 0.0,
+                "matched_skills": [],
+                "missing_skills": ["Alan Dışı Teknoloji (.NET/Flutter/iOS/SAP)"],
+                "is_recommended": False,
+                "is_senior": False,
+                "is_intern_or_grad": False,
+                "fit_summary": "Adayın uzmanlık alanı (Yazılım / Sistem / Web / Backend) dışındaki teknoloji yığını."
+            }
+
+        # 3. Yetenek Eşleşmesi (Tam kelime sınırı ile)
         matched_dict = {}
         for skill_key, official_name in self.candidate_skills.items():
             pattern = r'\b' + re.escape(skill_key) + r'\b'
             if re.search(pattern, combined_text):
                 matched_dict[official_name] = True
 
-        # Astro & TypeScript & React Native & NestJS & Prisma özel tespitleri
-        if "astro" in combined_text:
-            matched_dict["Astro"] = True
-        if "typescript" in combined_text or "ts" in combined_text:
+        # Doğrulanmış temel teknolojiler için sınırlandırılmış regex kontrolleri
+        if re.search(r'\b(typescript|ts)\b', combined_text):
             matched_dict["TypeScript"] = True
-        if "react native" in combined_text or "react-native" in combined_text:
+        if re.search(r'\bastro\b', combined_text):
+            matched_dict["Astro"] = True
+        if re.search(r'\breact native\b|react-native', combined_text):
             matched_dict["React Native"] = True
-        elif "react" in combined_text:
+        elif re.search(r'\breact\b|\breact\.js\b', combined_text):
             matched_dict["React"] = True
-        if "nestjs" in combined_text or "nest.js" in combined_text:
+        if re.search(r'\bnestjs\b|\bnest\.js\b', combined_text):
             matched_dict["NestJS"] = True
-        if "prisma" in combined_text:
+        if re.search(r'\bprisma\b', combined_text):
             matched_dict["Prisma ORM"] = True
-        if "supabase" in combined_text:
+        if re.search(r'\bsupabase\b', combined_text):
             matched_dict["Supabase"] = True
-        if "socket.io" in combined_text or "websocket" in combined_text:
+        if re.search(r'\bsocket\.io\b|\bwebsockets?\b', combined_text):
             matched_dict["Socket.IO"] = True
 
         matched_skills = list(matched_dict.keys())

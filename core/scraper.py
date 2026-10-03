@@ -17,21 +17,25 @@ class LinkedInScraper:
         self, 
         keyword: str, 
         location: str = "Istanbul, Turkey", 
-        limit: int = 10,
+        limit: Optional[int] = None,
         time_filter: Optional[str] = "r86400",  # r3600 (1 saat), r86400 (24 saat), r604800 (1 hafta)
         sort_by: Optional[str] = "DD",         # DD: Date Descending (en güncel)
         experience_levels: Optional[List[str]] = None  # ['1', '2', '3'] -> Internship, Entry, Associate
     ) -> List[Dict[str, Any]]:
         """
         LinkedIn Guest API üzerinden parametreli, filtrelenmiş ve sayfalama destekli güncel iş araması yapar.
+        limit=None veya limit<=0 ise son 24 saatteki tüm ilanları çeker.
         """
         jobs = []
         start = 0
         batch_size = 25
-        max_pages = 3
+        max_pages = 10
         page = 0
 
-        while len(jobs) < limit and page < max_pages:
+        while page < max_pages:
+            if limit is not None and limit > 0 and len(jobs) >= limit:
+                break
+
             page += 1
             params = {
                 "keywords": keyword,
@@ -88,7 +92,7 @@ class LinkedInScraper:
                             })
                             new_in_batch += 1
 
-                    if len(jobs) >= limit:
+                    if limit is not None and limit > 0 and len(jobs) >= limit:
                         break
 
                 if new_in_batch == 0:
@@ -105,7 +109,7 @@ class LinkedInScraper:
         return jobs
 
     def get_job_details(self, job_url: str) -> Dict[str, Any]:
-        """İlan detay sayfasından gereksinimleri, açıklamayı ve Easy Apply durumunu çeker."""
+        """İlan detay sayfasından gereksinimleri, açıklamayı ve Easy Apply durumunu tam olarak çeker."""
         job_id_match = re.search(r'-(\d+)$', job_url.rstrip("/"))
         if not job_id_match:
             job_id_match = re.search(r'/view/(\d+)', job_url)
@@ -123,10 +127,21 @@ class LinkedInScraper:
                 is_offsite = bool(re.search(r'offsite-apply-icon-svg|apply-link-offsite', html, re.I))
                 is_easy_apply = is_onsite and not is_offsite
 
-                clean_text = re.sub(r'<[^>]+>', ' ', html)
-                clean_text = ' '.join(clean_text.split())
+                # Açıklama gövdesini ayıkla (Öncelikle show-more-less markup, yoksa description section)
+                markup_match = re.search(r'class="[^"]*show-more-less-html__markup[^"]*">([\s\S]*?)</div>', html)
+                if markup_match:
+                    raw_desc = markup_match.group(1)
+                else:
+                    section_match = re.search(r'<section[^>]*class="[^"]*description[^"]*"[^>]*>([\s\S]*?)</section>', html)
+                    raw_desc = section_match.group(1) if section_match else html
+
+                # Satır başlarını koruyarak HTML temizliği yap
+                clean_desc = re.sub(r'<(?:br|/p|/li|/div|/h[1-6])[^>]*>', '\n', raw_desc, flags=re.I)
+                clean_desc = re.sub(r'<[^>]+>', ' ', clean_desc)
+                clean_desc = '\n'.join(' '.join(line.split()) for line in clean_desc.split('\n') if line.strip())
+
                 return {
-                    "description": clean_text,
+                    "description": clean_desc,
                     "is_easy_apply": is_easy_apply
                 }
             except Exception:

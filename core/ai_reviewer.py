@@ -127,10 +127,11 @@ class AIReviewer:
         return None
 
     def _review_with_gemini(self, job: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Gemini LLM modeline ilanı ve aday profilini vererek JSON formatında analiz alır."""
+        """Gemini LLM modeline ilanın tamamını ve aday profilini vererek derin semantik analiz alır."""
         title = job.get("title", "")
         company = job.get("company", "Company")
         desc = job.get("description", "")
+        is_easy_apply = job.get("is_easy_apply", False)
         
         master_cv_rel = self.profile["personal"].get("master_cv_en_pdf", "source_resume/Omer_Faruk_Gokdas_CV_Master_ATS.pdf")
         recommended_cv_pdf = str(BASE_DIR / master_cv_rel)
@@ -152,32 +153,49 @@ Doğrulanmış Gerçek Projeler (%100 Tek Gerçeklik Kaynağı):
 KESİN KURAL: Adayın yapmadığı hiçbir sahte teknoloji (Spring Boot 3, Redis, AWS, Kubernetes, Flutter, Swift vb.) uydurulamaz. Yalnızca yukarıdaki doğrulanmış gerçek yetenekler ve projeler temel alınmalıdır.
 """
 
+        cover_letter_instruction = ""
+        if is_easy_apply:
+            cover_letter_instruction = """
+4. ÖN YAZI (COVER LETTER) KURALI (LinkedIn Kolay Başvuru - Easy Apply):
+   - Bu bir Easy Apply ilanıdır. Aday için işverene iletilecek KESİNLİKLE MAKSİMUM 400 KARAKTER (boşluklar dahil) mikro bir başvuru notu hazırla.
+   - 400 karakter sınırını ASLA aşma!
+   - İçerik:
+     * Saygılı hitap ('Sayın [Şirket] Ekibi,' veya 'Dear [Company] Team,')
+     * Doğrudan giriş: Yazılım Mühendisliği mezuniyeti ve 42 İstanbul sistem disiplini.
+     * En uygun proje: CoupleOS (React Native, NestJS, LLM) veya 42 Minishell.
+     * 0 gün ihbar süresi ve hazır başlama durumu.
+     * İsim ve telefon numarası.
+   - 'custom_cover_letter' alanına bu mikro metni yaz.
+"""
+        else:
+            cover_letter_instruction = """
+4. ÖN YAZI (COVER LETTER) KURALI (Şirket Portalı / Dış Başvuru):
+   - Bu bir dış şirket portalı başvurusudur (Easy Apply DEĞİLDİR).
+   - KESİNLİKLE ÖN YAZI YAZMA. 'custom_cover_letter' alanını BOŞ STRING ("") olarak bırak.
+"""
+
         prompt = f"""
-Sen iş başvurularını değerlendiren uzman ve dürüst bir teknik kariyer danışmanısın.
-Aşağıda verilen aday profilini ve iş ilanını detaylı incele:
+Sen iş başvurularını titizlikle değerlendiren kıdemli bir teknik direktörsün.
+Aşağıda verilen aday profilini ve iş ilanının TAMAMINI incele:
 
 {candidate_info}
 
 İNCELENECEK İŞ İLANI:
 - Şirket: {company}
 - Pozisyon: {title}
-- İlan Açıklaması: {desc[:2500]}
+- Başvuru Kanalı: {'LinkedIn Kolay Başvuru (Easy Apply)' if is_easy_apply else 'Şirket Portalı / Dış Başvuru'}
+- İlan Metninin Tamamı (Hakkında, Görevler ve Gereksinimler):
+{desc[:6000]}
 
 GÖREVLERİN:
 1. İlan dilini ('tr' veya 'en') belirle.
-2. Pozisyonun adayın yetenekleriyle uyumunu değerlendir.
-   - İlan tamamen alakasız bir alandaysa (örn: Flutter, Swift/iOS native, .NET/C#, SAP, Satış, Muhasebe) veya uyumsuzsa: verdict='SKIP', match_score < 50.
-   - İlanda 3+ yıl veya kıdemli yazsa bile adayın C/C++, Sistem, Backend (Nest/Node/SQL), Mobil (React Native) veya Frontend (Astro/TS) temelleri örtüşüyorsa: verdict='BORDERLINE', match_score 50-69.
+2. Pozisyonun gerçek alanını ve adayın yetenekleriyle uyumunu değerlendir:
+   - DİKKAT: Pozisyon yazılım, sistem, bilişim veya yapay zeka alanı DIŞINDA ise (örn: Hukuk, Kimya, Tıp, Eczacılık, Satış, Pazarlama, Muhasebe, İnşaat, Makine vb.) KESİNLİKLE verdict='SKIP', match_score=0.0 ver.
+   - Yazılım teknolojileri adayın alanıyla tamamen alakasızsa (.NET/C#, Flutter, Swift/iOS Native, SAP): verdict='SKIP', match_score < 50.
+   - İlanda kıdemli yazsa bile adayın C/C++, Sistem, Backend (Nest/Node/SQL), Mobil (React Native), Web (Astro/TS) veya AI altyapısı örtüşüyorsa: verdict='BORDERLINE', match_score 50-69.
    - İlan staj, genç yetenek, junior, mezun veya adayın ana teknolojileriyle doğrudan örtüşüyorsa: verdict='RECOMMENDED', match_score >= 70.
 3. İlan için en uygun öne çıkarılacak projeyi seç (CoupleOS, branda.ist, Minishell & Philosophers, NishChat veya Beşiktaş BT Stajı).
-4. Bu şirkete ve pozisyona özel, ASLA YAPAY ZEKA ŞABLONU GİBİ DURMAYAN, samimi, akıcı ve profesyonel bir Ön Yazı (Cover Letter) yaz:
-   - KESİNLİKLE MADDE İŞARETİ VEYA LİSTE (- **...**) KULLANMA. Tamamen akıcı 3 doğal paragraftan oluşsun:
-     * 1. Paragraf: Pozisyona özel doğrudan giriş, Yazılım Mühendisliği mezuniyeti ve 42 İstanbul altyapısı.
-     * 2. Paragraf: Pozisyonun gereksinimlerine göre adayın en uygun projesindeki (CoupleOS, branda.ist veya 42 Minishell) somut mühendislik meydan okumasını ve çözümünü anlatan doğal bir paragraf.
-     * 3. Paragraf: İhbar süresinin bulunmadığını (0 gün - hemen başlayabilir), şirketin ekibine katılma motivasyonunu belirten profesyonel ve saygılı kapanış.
-   - İlan Türkçe ise Türkçe, İngilizce ise İngilizce yaz.
-   - Hitap: "Sayın {company} İşe Alım Ekibi," (TR) veya "Dear Hiring Team at {company}," (EN).
-   - İmza: Ömer Faruk Gökdaş ve iletişim bilgileri.
+{cover_letter_instruction}
 
 Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür:
 {{
@@ -186,7 +204,7 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
   "language": "tr" | "en",
   "highlighted_project": "Seçilen projenin adı",
   "reasoning": "Neden bu kararın verildiğini açıklayan 1-2 cümlelik Türkçe veya İngilizce özet",
-  "custom_cover_letter": "Hazırlanan tam metin 3 paragraflık akıcı ön yazı"
+  "custom_cover_letter": ""
 }}
 """
         response_text = self._call_gemini_api(prompt)
@@ -204,6 +222,14 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
             verdict = data.get("verdict", "RECOMMENDED").upper()
             if verdict not in ("RECOMMENDED", "BORDERLINE", "SKIP"):
                 verdict = "RECOMMENDED"
+
+            custom_cover_letter = str(data.get("custom_cover_letter", "")).strip()
+            # 400 Karakter Easy Apply Garantisi
+            if is_easy_apply and custom_cover_letter:
+                if len(custom_cover_letter) > 400:
+                    custom_cover_letter = custom_cover_letter[:396].rsplit(" ", 1)[0] + "..."
+            elif not is_easy_apply:
+                custom_cover_letter = ""
                 
             return {
                 "verdict": verdict,
@@ -212,7 +238,7 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
                 "reasoning": str(data.get("reasoning", "Gemini AI analizi tamamlandı.")),
                 "highlighted_project": str(data.get("highlighted_project", "42 Istanbul & branda.ist")),
                 "recommended_cv_pdf": recommended_cv_pdf,
-                "custom_cover_letter": str(data.get("custom_cover_letter", "")).strip(),
+                "custom_cover_letter": custom_cover_letter,
                 "ai_source": "Google Gemini"
             }
         except Exception as e:
@@ -224,6 +250,7 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
         title = job.get("title", "")
         company = job.get("company", "Company")
         desc = job.get("description", "")
+        is_easy_apply = job.get("is_easy_apply", False)
         desc_lower = desc.lower()
         title_lower = title.lower()
 
@@ -306,19 +333,12 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
             p2 = f"Eğitim ve proje süreçlerimde yüzeysel yaklaşımlar yerine mühendislik derinliğine, performans odaklı mimarilere ve temiz problem çözme disiplinine öncelik verdim. {project_story}"
             p3 = f"Herhangi bir ihbar sürem (0 gün) bulunmamakta olup, ekibinize tam zamanlı olarak hemen katılabilirim. {company} ekibinin mühendislik hedefleri doğrultusunda sorumluluk almaktan heyecan duyuyorum. Detaylı özgeçmişim ekte yer almakta olup, niteliklerimi bir mülakatta aktarmaktan mutluluk duyarım."
 
-            custom_cover_letter = f"""Sayın {company} İşe Alım Ekibi,
-
-{p1}
-
-{p2}
-
-{p3}
-
-Saygılarımla,
-
-{candidate_name}
-{phone} | {email}
-{linkedin} | {github}"""
+            if is_easy_apply:
+                custom_cover_letter = f"Sayın {company} Ekibi,\nYazılım Mühendisliği mezuniyetim ve 42 İstanbul sistem disiplinimle {title} rolüne katkı sunmak istiyorum. {best_project} projemdeki gerçek mühendislik birikimimle ekibinize hemen katılabilirim. İhbar sürem yoktur (0 gün).\nÖmer Faruk Gökdaş | {phone}"
+                if len(custom_cover_letter) > 400:
+                    custom_cover_letter = custom_cover_letter[:396].rsplit(" ", 1)[0] + "..."
+            else:
+                custom_cover_letter = ""
 
             if is_borderline:
                 reasoning = f"İlan {company} - {title} (Türkçe). Düşük ihtimal / sınırda eşleşme (%{match_score:.1f}). İlanda geçen ekler ({', '.join(missing_skills[:3]) if missing_skills else 'Ek deneyim'}) bulunuyor; temel yazılım birikimiyle denenebilir."
@@ -328,45 +348,24 @@ Saygılarımla,
         else:
             # English
             if is_mobile_or_ai:
-                project_story = "In my flagship project CoupleOS, I architected a full-stack real-time mobile platform utilizing React Native (Expo) with Zustand on the frontend and NestJS with Prisma and Supabase PostgreSQL on the backend. I integrated multi-LLM pipelines combining Google Gemini and OpenAI APIs with graceful fallback mechanisms, alongside WebSocket-driven event streaming via Socket.IO."
                 best_project = "CoupleOS (Mobile & Multi-LLM Architecture)"
             elif is_systems_cpp:
-                project_story = "Through the rigorous, test-driven curriculum at 42 Istanbul, I developed a strong foundation in low-level systems programming in C. My work includes Minishell (a POSIX-compliant Unix shell with process control, pipes, and Valgrind-verified zero-leak memory management) and multithreaded concurrency solutions using POSIX mutex synchronization in Dining Philosophers."
                 best_project = "Minishell & Philosophers (42 Istanbul)"
             elif is_backend_node:
-                project_story = "On the backend, I design reliable REST services and real-time architectures using NestJS, Node.js, and PostgreSQL. In CoupleOS and NishChat, I implemented Prisma ORM relational modeling, JWT authentication, and bidirectional WebSocket communication with Socket.IO, prioritizing clean code architecture and data consistency."
                 best_project = "CoupleOS & NishChat (Backend & Real-Time APIs)"
             elif is_frontend_web:
-                project_story = "I architected and published branda.ist, an 80+ page production commercial web platform utilizing Astro and TypeScript. By implementing automated component pipelines and optimizing assets with Sharp and PurgeCSS, I achieved sub-1.5s initial page load times alongside structured programmatic SEO."
                 best_project = "branda.ist (Commercial Web Platform — Astro & TypeScript)"
             elif is_it_support:
-                project_story = "During my IT internship at Besiktas Municipality, I gained hands-on experience maintaining enterprise infrastructure across 500+ workstations, managing Active Directory user credentials, diagnosing TCP/IP network issues, and authoring Bash automation scripts for system diagnostics."
                 best_project = "IT Internship (Besiktas Municipality)"
             else:
-                project_story = "Combining my Bachelor's degree in Software Engineering from Nisantasi University with the intensive peer-to-peer curriculum at 42 Istanbul, I have developed strong algorithmic foundations, low-level problem-solving abilities, and practical full-stack development experience."
                 best_project = "42 Istanbul & Software Engineering Foundations"
 
-            if is_intern_talent:
-                p1 = f"I am writing to express my strong interest in the {title} opportunity at {company}. Having graduated with a Bachelor's degree in Software Engineering from Nisantasi University (July 2026) while actively pursuing the rigorous 42 Istanbul systems programming curriculum, I am eager to contribute my technical foundation to your team."
+            if is_easy_apply:
+                custom_cover_letter = f"Dear {company} Team,\nWith a Software Engineering degree and 42 Istanbul systems rigor, I am eager to contribute to the {title} position. Through my work on {best_project}, I have built reliable systems. Available immediately (0 days notice).\nOmer Faruk Gokdas | {phone}"
+                if len(custom_cover_letter) > 400:
+                    custom_cover_letter = custom_cover_letter[:396].rsplit(" ", 1)[0] + "..."
             else:
-                p1 = f"I am writing to apply for the {title} position at {company}. With a solid foundation in Software Engineering and rigorous systems programming training from 42 Istanbul, I look forward to contributing dependable, clean code to your engineering objectives."
-
-            p2 = f"Throughout my academic and independent project work, I have focused on genuine engineering depth, performance optimization, and robust problem solving. {project_story}"
-            p3 = f"I am currently available to join your team immediately on a full-time basis, with no notice period (0 days). What excites me about {company} is the opportunity to tackle meaningful engineering challenges alongside experienced peers. Thank you for your time and consideration, and I welcome the opportunity to discuss my qualifications in an interview."
-
-            custom_cover_letter = f"""Dear Hiring Team at {company},
-
-{p1}
-
-{p2}
-
-{p3}
-
-Sincerely,
-
-{candidate_name}
-{phone} | {email}
-{linkedin} | {github}"""
+                custom_cover_letter = ""
 
             if is_borderline:
                 reasoning = f"İlan {company} - {title} (English). Borderline match (%{match_score:.1f}). Some preferred technologies ({', '.join(missing_skills[:3]) if missing_skills else 'Senior requirements'}) are stretch goals; worth trying based on strong core engineering foundations."
