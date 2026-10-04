@@ -37,5 +37,3 @@ min_match_score: 50.0
 
 # İlan sayısı kısıtlaması kaldırıldı (null: son 24 saatteki tüm ilanlar taranır)
 jobs_per_query: null
-daily_max_applications: 35
-daily_max_inspections: 120

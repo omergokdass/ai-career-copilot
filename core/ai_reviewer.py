@@ -36,7 +36,8 @@ class AIReviewer:
             
         self.gemini_api_key = os.environ.get("GEMINI_API_KEY", "").strip()
         self.gemini_model = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash").strip()
-        self.max_api_calls_per_run = int(os.environ.get("MAX_AI_CALLS_PER_RUN", "15"))
+        max_calls_env = os.environ.get("MAX_AI_CALLS_PER_RUN", "").strip()
+        self.max_api_calls_per_run = int(max_calls_env) if max_calls_env else None
         self.api_call_count = 0
         self.consecutive_errors = 0
         self.circuit_broken = False
@@ -44,13 +45,13 @@ class AIReviewer:
     def review_job_deeply(self, job: Dict[str, Any]) -> Dict[str, Any]:
         """
         İlanı derinlemesine inceler:
-        1. Eğer GEMINI_API_KEY mevcutsa, kota aşılmamışsa ve devre kesici tetiklenmemişse Google Gemini çağrılır.
-        2. Maksimum çağrı sınırına (15) ulaşıldığında veya üst üste 2 hata alındığında API kilitlenir,
-           kalan tüm ilanlar 0 maliyetle yerel deterministik kural motoruyla işlenir.
+        1. Eğer GEMINI_API_KEY mevcutsa, devre kesici tetiklenmemişse Google Gemini çağrılır.
+        2. Herhangi bir yapay sayı kısıtlaması yoktur; barajı geçen tüm ilanlar Gemini ile değerlendirilir.
+        3. Üst üste 3 kritik API hatası alınırsa güvenlik amacıyla yerel kural motoruna geri dönülür.
         """
         if self.gemini_api_key and not self.circuit_broken:
-            if self.api_call_count >= self.max_api_calls_per_run:
-                print(f"[AIReviewer Kota Kilidi] Vardiya başı maksimum AI istek sınırına ({self.max_api_calls_per_run}) ulaşıldı. Kalan ilanlar yerel kural motoruyla (0 maliyet) işlenecek.")
+            if self.max_api_calls_per_run is not None and self.api_call_count >= self.max_api_calls_per_run:
+                print(f"[AIReviewer Kota Kilidi] Belirlenen AI istek sınırına ({self.max_api_calls_per_run}) ulaşıldı. Kalan ilanlar yerel kural motoruyla işlenecek.")
                 return self._heuristic_review(job)
 
             # Kota aşımı (15 RPM) önlemek için istekler arasına 1.5 saniye nezaket gecikmesi
