@@ -1,36 +1,35 @@
-# 🚀 AI Career Copilot — Autonomous Job Hunter & Application Engine
+# 🚀 AI Career Copilot — Otonom İş Arama & Başvuru Asistanı
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg?logo=python&logoColor=white)](https://python.org)
-[![Gemini](https://img.shields.io/badge/Google%20Gemini-3.8%20Flash-8E75B2.svg?logo=google-gemini&logoColor=white)](https://aistudio.google.com/)
+[![Gemini](https://img.shields.io/badge/Google%20Gemini-2.5%20Flash-8E75B2.svg?logo=google-gemini&logoColor=white)](https://aistudio.google.com/)
 [![Telegram](https://img.shields.io/badge/Telegram-Bot%20API-2CA5E0.svg?logo=telegram&logoColor=white)](https://core.telegram.org/bots)
-[![CI/CD](https://img.shields.io/badge/GitHub%20Actions-Automated%204--Shift-2088FF.svg?logo=github-actions&logoColor=white)](https://github.com)
-[![Zero-Hallucination](https://img.shields.io/badge/Integrity-%25100%20Zero--Hallucination-success.svg)](#)
-[![Circuit-Breaker](https://img.shields.io/badge/Safety-Circuit%20Breaker%20Protected-orange.svg)](#)
+[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%202--Vardiya-2088FF.svg?logo=github-actions&logoColor=white)](https://github.com)
+[![cron-job.org](https://img.shields.io/badge/Trigger-cron--job.org-green.svg)](https://cron-job.org)
+[![Zero-Hallucination](https://img.shields.io/badge/Dürüstlük-%25100%20Doğrulanmış%20Portföy-success.svg)](#)
 
-> **AI Career Copilot**, iş arama ve başvuru sürecini uçtan uca otomatikleştiren, **Google Gemini 3.8 Flash** bilişsel motoru ile güçlendirilmiş, sıfır halüsinasyon garantili otonom bir kariyer asistanıdır.
+> **AI Career Copilot**, iş arama sürecini uçtan uca otomatikleştiren, **Google Gemini** bilişsel motoruyla güçlendirilmiş, sıfır halüsinasyon garantili ve bulut üzerinde 7/24 otonom çalışan yeni nesil bir kariyer asistanıdır.
 
-LinkedIn ve kurumsal şirket portallarındaki açık pozisyonları sürekli tarar, adayın gerçek mühendislik projeleriyle semantik uyum puanı hesaplar, her şirket için akıcı, doğal ve insan yazımı 3 paragraflık ön yazılar (Cover Letter) üretir ve kullanıcının telefonuna **tek dokunuşla başvuru yapabileceği zengin Telegram kartları** iletir.
+Bilgisayarınız kapalıyken bile LinkedIn üzerindeki tüm güncel ilanları tarar, adayın gerçek mühendislik projeleriyle (CoupleOS, 42 İstanbul C/C++ Sistem Mimarisi vb.) semantik uyum analizi yapar, LinkedIn mobil Kolay Başvuru (Easy Apply) formuna özel **maksimum 400 karakterlik insan yazımı başvuru notları** üretir ve doğrudan Telegram üzerinden tek dokunuşla başvurabileceğiniz zengin kartlar iletir.
 
 ---
 
-## 🌟 Öne Çıkan Özellikler
+## 🌟 Öne Çıkan Yetenekler
 
-* **🧠 Google Gemini 3.8 Flash Bilişsel Motoru:** İlan metinlerini derinlemesine analiz ederek pozisyonun gerçek beklentilerini adayın doğrulanmış yetenek havuzuyla (CoupleOS, 42 İstanbul C/C++ Sistem Programlama, branda.ist, NishChat) kıyaslar ve semantik uyum puanı üretir.
-* **✍️ Doğal, Akıcı & İnsan Yazımı Ön Yazılar:** Yapay zeka klişesi kokan madde imleri (`- **...**`) yerine, adayın gerçek projelerindeki teknik zorlukları ve çözümleri hikayeleştiren **3 paragraflık profesyonel kurumsal ön yazılar** üretir.
-* **🛡️ %100 Sıfır Halüsinasyon İlkesi:** Adayın master profilinde yer almayan hiçbir teknoloji veya şişirilmiş deneyim (Spring Boot, Redis, AWS vb.) yapay zeka tarafından uydurulamaz.
-* **📱 Zengin Telegram Copilot Arayüzü:**
-  * **İnteraktif Başvuru Düğmeleri:** `[ 🚀 ⚡ Kolay Başvur (LinkedIn) ]` veya `[ 🚀 🌐 Şirket Portalında Başvur ]` butonları ile ilana tek tıkla geçiş.
-  * **Tek Dokunuşla Kopyalama (`<code>`):** Telefonda ön yazıya dokunulduğu an metin panoya kopyalanır.
-  * **Özel Fırsat Rozetleri:** Genç yetenek ve staj programları için `🎓 GENÇ YETENEK / STAJ FIRSATI`, yüksek deneyim isteyen ilanlar için `💼 KIDEMLİ / DENENEBİLİR İLAN` etiketleri.
-  * **Canlı İlerleme Sayacı:** Her bildirimde o an taranan ve uygun bulunan ilan sayıları dinamik aktarılır.
-* **🛑 4 Kademeli Güvenlik Kalkanı & Devre Kesici (Circuit Breaker):**
-  * **Sıfır Fatura Riski:** Google AI Studio ücretsiz katmanında çalışır.
-  * **Vardiya Başı Kota Kilidi:** Tek vardiyada maksimum 15 AI çağrısı yapılabilir; kota dolduğunda 0 maliyetli yerel motor devreye girer.
-  * **Otomatik Devre Kesici:** Üst üste 2 hata alındığında API çağrıları kilitlenerek sonsuz döngü ve kota israfı önlenir.
-  * **10 Dakika Hard Timeout:** GitHub Actions 10 dakikayı geçerse işlemi otomatik durdurur.
-* **⏰ 4 Vardiyalı Akıllı Dağıtım:** Türkiye saatine (UTC+3) göre optimize edilmiş 4 ana zaman diliminde (10:00, 12:00, 14:00, 16:00) çalışarak LinkedIn rate-limit'lerini tamamen bypass eder.
-* **🎯 Kesin Kolay Başvuru (Easy Apply) Tespiti:** Sayfa metinlerine değil, LinkedIn DOM elementlerine (`apply-link-onsite`, `guest-to-member-job-apply`) bakarak LinkedIn içi başvuruları ve dış şirket portallarını %100 doğrulukla ayırt eder.
-* **📄 92 Puanlık Master ATS CV Eşlemesi:** Uluslararası ATS standartlarında optimize edilmiş tek sayfa A4 PDF CV otomatik olarak başvuru paketine eklenir.
+* **🧠 Tam Metin Gemini Semantik İncelemesi:** İlan açıklamalarının sorumluluklar ve gereksinimler bölümlerini (6.000 karaktere kadar) eksiksiz okur. Ömer Faruk Gökdaş'ın master profilindeki gerçek deneyimleri ile eşleştirir.
+* **💬 LinkedIn Mobil Uyumlu Kolay Başvuru Notu (0-400 Karakter):**
+  * LinkedIn mobil uygulamasındaki *"Bu ilanı en iyi seçenek olarak işaretle (İsteğe bağlı) - Başvurunuzla birlikte bir mesaj ekleyin (0/400)"* alanına özel üretilir.
+  * Klasik "Sayın Yetkili / Saygılarımla" gibi hantal e-posta kalıplarından arındırılmış, doğrudan teknik katma değere odaklanan, yapay zeka kokmayan samimi mühendis dili.
+  * Python seviyesinde kesin **$\le$ 400 karakter** uzunluk garantisi.
+* **🌐 Şirket Portalı / Dış Başvurular İçin Temiz Ayrım:** Dış şirket portallarına yönlendiren ilanlar için gereksiz ön yazı üretilmez; sadece doğrudan başvuru butonu ve 92 puanlık Master ATS CV paketi sunulur.
+* **💾 Git Tabanlı Kalıcı Veritabanı Hafızası:**
+  * `applications.db` SQLite veritabanı, GitHub Actions her çalıştığında otomatik olarak repoya commit edilir (`[skip ci]`).
+  * Bulut sunucuları kapansa bile daha önce incelenen, elenen veya önerilen hiçbir ilan asla unutulmaz ve mükerrer bildirim gönderilmez.
+* **⏰ 2 Vardiyalı & Kısıtlamasız Son 24 Saat Taraması:**
+  * **Vardiya 1 (10:05 TSI):** Genç Yetenek, Staj, C/C++ & Sistem Programlama, Junior Backend
+  * **Vardiya 2 (14:05 TSI):** Frontend (React/TypeScript), Mobil (React Native), AI Engineer & IT Destek
+  * `jobs_per_query: null` ayarı ve 20 sayfalık (500 ilana kadar) arama tavanı sayesinde son 24 saatteki tüm ilanlar eksiksiz incelenir; yapay sınır yoktur.
+* **⏱️ Harici Tetikleyici (cron-job.org) ile Dakik Çalışma:** GitHub Actions'ın ücretsiz cron kuyruk gecikmelerini aşmak için cron-job.org üzerinden hassas dakikada webhook tetiklemesi yapılır.
+* **🔍 Şeffaf Denetim Mekanizması:** Her vardiyada filtrenin doğru çalıştığını teyit edebilmeniz için elenen ilk ilanın gerekçesi (`🚫 [ÖRNEK ELENEN İLAN — TEST/DENETİM]`) Telegram'a iletilir.
 
 ---
 
@@ -38,24 +37,27 @@ LinkedIn ve kurumsal şirket portallarındaki açık pozisyonları sürekli tara
 
 ```mermaid
 flowchart TD
-    A["GitHub Actions (Bulut) / Yerel Orkestratör<br>10:00 | 12:00 | 14:00 | 16:00"] --> B["Scraper Engine (LinkedIn Guest API)"]
-    B --> C["applications.db (SQLite Deduplication)"]
-    C -->|Mükerrer Olmayan Yeni İlan| D["JobMatcher (Kıdem, Negatif Filtre & Ön Eleme)"]
-    D -->|Skor >= 50| E["AIReviewer (Google Gemini 3.8 Flash)"]
-    D -->|Skor < 50| F["Arşivle (SKIPPED)"]
+    Trigger["cron-job.org Webhook / GitHub Actions Cron<br>(Vardiya 1: 10:05 | Vardiya 2: 14:05 TSI)"] --> Runner["GitHub Actions Cloud Runner"]
+    Runner --> Pull["Git Pull & SQLite Veritabanı Yükleme"]
+    Pull --> Scraper["LinkedIn Scraper (Son 24 Saat, Kısıtlamasız)"]
+    Scraper --> Deduplicate{"applications.db<br>Daha Önce İncelendi mi?"}
     
-    E -->|Kota Dolu / API Hatası| G["Heuristic Engine (0 Maliyetli Yerel Kural Motoru)"]
-    E -->|Normal Akış| H{Semantik Analiz}
+    Deduplicate -->|Evet| Ignore["Atla (Mükerrer Önleme)"]
+    Deduplicate -->|Hayır| Matcher["JobMatcher (Teknik Filtre, Kıdem & Negatif Liste)"]
     
-    H -->|Staj / Mezun / Güçlü Eşleşme %70+| I["Şirkete Özel 3 Paragraflık Akıcı Ön Yazı"]
-    H -->|Kıdemli / Sınırda %50 - %69| J["Kıdemli / Denenebilir İlan Paketi"]
-    H -->|Uyuşmazlık| F
-    G --> I
+    Matcher -->|Uyum < %50 veya Negatif Unvan| SkipRecord["Veritabanına 'SKIPPED' Olarak Kaydet"]
+    Matcher -->|Uyum >= %50| Gemini["AIReviewer (Google Gemini 2.5 Flash)"]
     
-    I --> K["92 Puanlık Master ATS CV Eşlemesi"]
-    J --> K
-    K --> L["Telegram Notifier Engine"]
-    L --> M["📱 Telegram Bildirimi<br>• Doğrudan Başvuru Butonu<br>• Tek Dokunuşla Kopyalanan Ön Yazı<br>• Canlı Tarama İstatistikleri<br>• Staj / Kıdem Rozetleri"]
+    Gemini --> Decision{"Değerlendirme & Başvuru Kanalı"}
+    Decision -->|Easy Apply| EANote["Özgün Top Choice Notu (Maks. 400 Karakter)"]
+    Decision -->|Offsite| OffsiteLink["Dış Portal Bağlantısı (Ön Yazısız)"]
+    
+    EANote --> Telegram["📱 Telegram Notifier Engine"]
+    OffsiteLink --> Telegram
+    SkipRecord -->|Vardiya Başı 1 Örnek| AuditNote["Telegram Denetim Bildirimi"]
+    AuditNote --> Telegram
+    
+    Telegram --> Commit["Git Auto-Commit: applications.db ➔ main"]
 ```
 
 ---
@@ -64,32 +66,61 @@ flowchart TD
 
 ```text
 ├── .github/workflows/
-│   └── daily_pipeline.yml       # 4 vardiyalı otomatik GitHub Actions cron iş akışı (10 dk timeout)
+│   └── daily_pipeline.yml       # 2 vardiyalı GitHub Actions iş akışı + DB Git commit adımı
 ├── config/
-│   ├── master_profile.yaml      # Adayın tek gerçeklik kaynağı (%100 doğrulanmış portföy & CoupleOS)
-│   ├── application_rules.yaml   # Güvenlik ve başvuru kuralları
-│   ├── notifications.yaml       # Telegram bildirim parametreleri
-│   └── search_criteria.yaml     # 6 ana kategoride 31+ arama sorgusu
+│   ├── master_profile.yaml      # Adayın tek gerçeklik kaynağı (%100 doğrulanmış portföy & yetenekler)
+│   ├── application_rules.yaml   # Eşleşme kuralları, kıdem ve öncelik tanımları
+│   ├── notifications.yaml       # Telegram bildirim şablonları ve format ayarları
+│   └── search_criteria.yaml     # 2 vardiyaya paylaştırılmış 12 odaklı arama sorgusu
 ├── core/
-│   ├── ai_reviewer.py           # Gemini 3.8 Flash, devre kesici (circuit breaker) ve ön yazı motoru
-│   ├── db.py                    # SQLite bağlantı yönetimli başvuru takip veritabanı
-│   ├── matcher.py               # Negatif filtre, kıdem tespiti ve matematiksel puanlayıcı
-│   ├── notifier.py              # Zengin Telegram HTML, inline buton ve kopyalama motoru
-│   ├── scraper.py               # LinkedIn parametreli sayfalama ve Easy Apply tespitçisi
-│   └── builder.py               # ATS CV ve ön yazı derleyici
+│   ├── ai_reviewer.py           # Gemini semantik analizi ve 400 karakterlik Easy Apply not üretimi
+│   ├── db.py                    # SQLite bağlantı yönetimli ve çift kayıt önleyici DB motoru
+│   ├── matcher.py               # Negatif unvan filtresi, C++ / TypeScript regex ve ön puanlama
+│   ├── notifier.py              # Zengin Telegram HTML kartları, butonlar ve istatistik özeti
+│   ├── scraper.py               # LinkedIn konuk API'si üzerinden sayfalama ve Easy Apply tespiti
+│   └── builder.py               # Master ATS CV eşleme motoru
 ├── source_resume/
-│   └── Omer_Faruk_Gokdas_CV_Master_ATS.pdf  # 92 puanlık doğrulanmış ana ATS CV
+│   └── Omer_Faruk_Gokdas_CV_Master_ATS.pdf  # 92 puanlık doğrulanmış tek sayfa ATS CV
 ├── tests/
-│   └── test_system.py           # 10 adet %100 geçen kapsamlı birim test paketi
-├── run_automation.py            # Ana çalıştırma, vardiya ve CLI orkestrasyon motoru
-├── requirements.txt             # Python kütüphane bağımlılıkları
-├── .env.example                 # Ortam değişkenleri şablonu
-└── README.md                    # Dokümantasyon
+│   ├── test_system.py           # Sistem temel bileşen testleri
+│   └── test_redesign.py         # 2 vardiya, 400 karakter not ve filtreleme birim testleri
+├── applications.db              # Canlı takip veritabanı (otomatik commit edilir)
+├── run_automation.py            # Ana çalıştırma, CLI parametreleri ve vardiya orkestratörü
+├── requirements.txt             # Python bağımlılıkları
+└── README.md                    # Proje dokümantasyonu
 ```
 
 ---
 
-## ⚡ Hızlı Başlangıç
+## 🎯 2 Vardiyalı Arama Stratejisi
+
+Arama sorguları gereksiz örtüşmelerden arındırılarak 12 yüksek hedefli sorguya indirgenmiş ve 2 ana dilime paylaştırılmıştır:
+
+| Dilim | Çalışma Saati (TSI) | Kapsanan Pozisyonlar | Odak Alanı |
+| :--- | :--- | :--- | :--- |
+| **Vardiya 1** | **10:05** | `Software Engineering Intern`<br>`Genç Yetenek Yazılım`<br>`Junior Software Engineer`<br>`Junior C++ Developer`<br>`C++ Developer`<br>`Junior Backend Developer` | Staj, Genç Yetenek, C/C++ Sistem Mühendisliği, Backend |
+| **Vardiya 2** | **14:05** | `Junior Frontend Developer`<br>`TypeScript Developer`<br>`React Native Developer`<br>`Junior AI Engineer`<br>`AI Developer`<br>`IT Support Specialist` | Web (React/TS), Mobil (React Native), Yapay Zeka & IT Destek |
+
+---
+
+## 📱 Telegram Bildirim Formatı
+
+Sistem Telegram üzerinden kullanıcıyı gereksiz bilgiyle boğmaz; doğrudan aksiyon aldırır:
+
+1. **Kolay Başvuru (Easy Apply) Kartı:**
+   * Uyum Puanı, Dil (TR/EN), Öne Çıkarılan Proje.
+   * `💬 LinkedIn Başvuru Mesajı (Top Choice / 0-400 Karakter — Dokun Kopyala)`: Telefonda dokunulduğunda panoya kopyalanan hazır metin.
+   * `[ 🚀 ⚡ Kolay Başvur (LinkedIn) ]` butonu.
+2. **Dış Başvuru Kartı:**
+   * Ön yazı kalabalığı olmadan doğrudan `[ 🚀 🌐 Şirket Portalında Başvur ]` butonu.
+3. **Denetim Kartı:**
+   * `🚫 [ÖRNEK ELENEN İLAN — TEST/DENETİM]` ile botun hangi ilanları neden elediğini gösteren şeffaf geri bildirim.
+4. **Vardiya Özeti:**
+   * Taranan yeni ilan, uygun bulunan ve elenen ilan sayıları.
+
+---
+
+## ⚡ Hızlı Başlangıç & Kurulum
 
 ### 1. Depoyu Klonlayın ve Bağımlılıkları Yükleyin
 
@@ -101,56 +132,58 @@ python -m pip install -r requirements.txt
 
 ### 2. Ortam Değişkenlerini Ayarlayın
 
-`.env.example` dosyasını `.env` olarak kopyalayın:
-
-```bash
-cp .env.example .env
-```
-
-`.env` dosyasını açıp API anahtarlarınızı girin:
+`.env` dosyanızı oluşturup API anahtarlarınızı tanımlayın:
 
 ```env
 GEMINI_API_KEY=AIzaSy...SizinGeminiAnahtariniz
-GEMINI_MODEL=gemini-3.8-flash
-MAX_AI_CALLS_PER_RUN=15
+GEMINI_MODEL=gemini-2.5-flash
 
 TELEGRAM_BOT_TOKEN=123456789:ABC...BotTokeniniz
 TELEGRAM_CHAT_ID=6865745103
 TELEGRAM_ENABLED=true
 ```
 
-### 3. Çalıştırma Seçenekleri
+### 3. Yerel Test ve Çalıştırma
 
 ```bash
-# Otomatik saate göre geçerli vardiyayı çalıştır
+# Geçerli saate göre ilgili vardiyayı çalıştırır (10:00-13:00 -> Vardiya 1, 13:00+ -> Vardiya 2)
 python run_automation.py
 
-# Tüm kategorileri hemen taramak için (Force mode)
-python run_automation.py --force --all
-
-# Geçmişe dönük geniş tarama (İlk kurulum havuz oluşturma)
-python run_automation.py --all --wide --force
-
-# Belirli bir vardiyayı elle çalıştırma (1: Genç Yetenek/AI, 2: C++, 3: Backend, 4: Frontend/IT)
+# Belirli bir vardiyayı elle zorlayarak çalıştırmak için:
 python run_automation.py --shift 1 --force
+python run_automation.py --shift 2 --force
+
+# Tüm kategorileri hemen taramak için:
+python run_automation.py --force --all
 ```
 
 ---
 
-## 🤖 GitHub Actions Otomasyonu (Bulutta 7/24)
+## 🤖 Bulut Otomasyonu (GitHub Actions + cron-job.org)
 
-Sistem, bilgisayarınız kapalıyken bile GitHub sunucularında her gün Türkiye saatiyle **10:00, 12:00, 14:00 ve 16:00'da** otomatik olarak çalışır.
+Sistem tamamen sunucusuz ve ücretsiz olarak bulutta çalışacak şekilde tasarlanmıştır:
 
-GitHub deponuzda **Settings ➔ Secrets and variables ➔ Actions** sekmesine şu 3 secret'ı eklemeniz yeterlidir:
-1. `GEMINI_API_KEY` (Google AI Studio)
-2. `TELEGRAM_BOT_TOKEN` (BotFather)
-3. `TELEGRAM_CHAT_ID` (Telegram kullanıcı ID)
+1. **GitHub Secrets:** Deponuzda **Settings ➔ Secrets and variables ➔ Actions** bölümüne şunları ekleyin:
+   * `GEMINI_API_KEY`
+   * `TELEGRAM_BOT_TOKEN`
+   * `TELEGRAM_CHAT_ID`
+2. **GitHub Personal Access Token (PAT):**
+   * GitHub Actions'ın `workflow_dispatch` API'sini dışarıdan tetikleyebilmesi için `repo` yetkisine sahip bir Fine-grained veya Classic Personal Access Token alın.
+3. **cron-job.org Kurulumu (Gecikmesiz Tetikleme):**
+   * **URL:** `https://api.github.com/repos/omergokdass/ai-career-copilot/actions/workflows/daily_pipeline.yml/dispatches`
+   * **Method:** `POST`
+   * **Headers:**
+     * `Accept: application/vnd.github+json`
+     * `Authorization: Bearer <GITHUB_PAT_TOKEN>`
+     * `User-Agent: cron-job-org`
+   * **Body (Vardiya 1 için 10:05 TSI):** `{"ref": "main", "inputs": {"shift": "1"}}`
+   * **Body (Vardiya 2 için 14:05 TSI):** `{"ref": "main", "inputs": {"shift": "2"}}`
 
 ---
 
 ## 🧪 Testler
 
-Sistemdeki 10 birim testin tamamı sıfır sızıntı ve tam koruma garantisiyle çalışır:
+Sistem mimarisindeki 14 birim testin tamamı sıfır hata ile çalışır:
 
 ```bash
 python -m unittest discover tests
@@ -158,7 +191,7 @@ python -m unittest discover tests
 
 ---
 
-## 👤 Geliştirici ve İletişim
+## 👤 Geliştirici
 
 **Ömer Faruk Gökdaş**  
 * Nişantaşı Üniversitesi — Yazılım Mühendisliği
