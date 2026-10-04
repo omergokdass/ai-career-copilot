@@ -156,22 +156,24 @@ KESİN KURAL: Adayın yapmadığı hiçbir sahte teknoloji (Spring Boot 3, Redis
         cover_letter_instruction = ""
         if is_easy_apply:
             cover_letter_instruction = """
-4. ÖN YAZI (COVER LETTER) KURALI (LinkedIn Kolay Başvuru - Easy Apply):
-   - Bu bir Easy Apply ilanıdır. Aday için işverene iletilecek KESİNLİKLE MAKSİMUM 400 KARAKTER (boşluklar dahil) mikro bir başvuru notu hazırla.
-   - 400 karakter sınırını ASLA aşma!
-   - İçerik:
-     * Saygılı hitap ('Sayın [Şirket] Ekibi,' veya 'Dear [Company] Team,')
-     * Doğrudan giriş: Yazılım Mühendisliği mezuniyeti ve 42 İstanbul sistem disiplini.
-     * En uygun proje: CoupleOS (React Native, NestJS, LLM) veya 42 Minishell.
-     * 0 gün ihbar süresi ve hazır başlama durumu.
-     * İsim ve telefon numarası.
-   - 'custom_cover_letter' alanına bu mikro metni yaz.
+4. LINKEDIN KOLAY BAŞVURU MESAJI (Top Choice - Why this job is a top choice and why you're a good fit):
+   - LinkedIn mobil uygulamasındaki 'Include a message with your application (0/400)' kutusu için doğrudan bir başvuru mesajı hazırla.
+   - KESİNLİKLE MAKSİMUM 400 KARAKTER (boşluklar dahil) olmalıdır! (İdeal aralık: 240 - 360 karakter).
+   - ASLA RESMİ MEKTUP / E-POSTA ŞABLONU KULLANMA:
+     * 'Sayın X İşe Alım Ekibi', 'Dear Hiring Team' gibi hitaplar YAZMA (karakter israfıdır).
+     * 'Saygılarımla', 'Ömer Faruk Gökdaş', telefon, e-posta gibi imza blokları YAZMA (LinkedIn profiliniz zaten ekranda adayın adıyla birlikte görünmektedir).
+   - YAPAY ZEKA KLİŞELERİ KULLANMA: 'Büyük bir heyecanla başvuruyorum', 'Mükemmel bir uyum içerisindeyim' gibi robotik laflardan kaçın.
+   - DOĞRUDAN VE NET İKİ ŞEYİ ANLAT:
+     1. Bu rol/şirket neden birinci tercihin? (İlandaki spesifik problem, teknoloji veya alan).
+     2. Adayın hangi somut doğrulanmış projesi (CoupleOS'ta LLM/NestJS/React Native, 42 Minishell'de C/Unix/bellek yönetimi, branda.ist'te Astro/TS/SEO) bu ilanın ihtiyacına doğrudan hız kazandıracak?
+   - Üslup: Mühendisten mühendise, kendinden emin, samimi ve %100 doğal. İlan Türkçe ise Türkçe, İngilizce ise İngilizce.
+   - 'custom_cover_letter' alanına SADECE bu mesaj metnini yaz.
 """
         else:
             cover_letter_instruction = """
-4. ÖN YAZI (COVER LETTER) KURALI (Şirket Portalı / Dış Başvuru):
-   - Bu bir dış şirket portalı başvurusudur (Easy Apply DEĞİLDİR).
-   - KESİNLİKLE ÖN YAZI YAZMA. 'custom_cover_letter' alanını BOŞ STRING ("") olarak bırak.
+4. BAŞVURU MESAJI KURALI (Şirket Portalı / Dış Başvuru):
+   - Bu bir şirket portalı dış başvurusudur (Easy Apply DEĞİLDİR).
+   - KESİNLİKLE mesaj oluşturma. 'custom_cover_letter' alanını BOŞ STRING ("") olarak bırak.
 """
 
         prompt = f"""
@@ -334,7 +336,16 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
             p3 = f"Herhangi bir ihbar sürem (0 gün) bulunmamakta olup, ekibinize tam zamanlı olarak hemen katılabilirim. {company} ekibinin mühendislik hedefleri doğrultusunda sorumluluk almaktan heyecan duyuyorum. Detaylı özgeçmişim ekte yer almakta olup, niteliklerimi bir mülakatta aktarmaktan mutluluk duyarım."
 
             if is_easy_apply:
-                custom_cover_letter = f"Sayın {company} Ekibi,\nYazılım Mühendisliği mezuniyetim ve 42 İstanbul sistem disiplinimle {title} rolüne katkı sunmak istiyorum. {best_project} projemdeki gerçek mühendislik birikimimle ekibinize hemen katılabilirim. İhbar sürem yoktur (0 gün).\nÖmer Faruk Gökdaş | {phone}"
+                if is_mobile_or_ai:
+                    custom_cover_letter = f"CoupleOS projemde React Native ve NestJS üzerinde çoklu LLM (Gemini/OpenAI) entegrasyonu ve gerçek zamanlı mimari kurdum. {company}'ın bu alandaki hedefleri tam olarak odaklandığım mühendislik derinliğiyle örtüşüyor. 42 İstanbul sistem disiplinimle ekibinize hemen adapte olabilirim."
+                elif is_systems_cpp:
+                    custom_cover_letter = f"42 Istanbul'da C ile POSIX Unix Minishell ve mutex senkronizasyonlu multithread sistemler geliştirdim. {company}'ın düşük seviye sistem altyapısı mühendislik temellerimle birebir uyuşuyor. Sıfır ihbar süresiyle ekibinize hemen değer katabilirim."
+                elif is_frontend_web:
+                    custom_cover_letter = f"Astro ve TypeScript ile 80+ sayfalık canlı branda.ist platformunu sub-1.5s hız ve SEO optimizasyonuyla yayına aldım. {company}'ın modern web ve kullanıcı deneyimi standartlarına ilk günden somut katkı sunmaya hazırım."
+                elif is_backend_node:
+                    custom_cover_letter = f"NestJS, Node.js ve PostgreSQL üzerinde ilişkisel veri modelleme ve Socket.IO canlı veri akışları inşa ettim. {company} backend hedefleriniz için temiz ve ölçeklenebilir mimari üretmeye hazırım."
+                else:
+                    custom_cover_letter = f"42 İstanbul'un derin sistem programlama ve algoritmik problem çözme disipliniyle yetiştim. {company}'ın mühendislik hedefleri üzerinde çalışmak istediğim alanla birebir örtüşüyor. Tam zamanlı olarak hemen başlayabilirim."
                 if len(custom_cover_letter) > 400:
                     custom_cover_letter = custom_cover_letter[:396].rsplit(" ", 1)[0] + "..."
             else:
@@ -361,7 +372,14 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
                 best_project = "42 Istanbul & Software Engineering Foundations"
 
             if is_easy_apply:
-                custom_cover_letter = f"Dear {company} Team,\nWith a Software Engineering degree and 42 Istanbul systems rigor, I am eager to contribute to the {title} position. Through my work on {best_project}, I have built reliable systems. Available immediately (0 days notice).\nOmer Faruk Gokdas | {phone}"
+                if is_mobile_or_ai:
+                    custom_cover_letter = f"In CoupleOS, I architected production multi-LLM pipelines with OpenAI/Gemini and NestJS/React Native. {company}'s vision aligns directly with my engineering focus. Available immediately with zero notice period."
+                elif is_systems_cpp:
+                    custom_cover_letter = f"At 42 Istanbul, I built Unix process pipelines and multithreaded mutex concurrency in C from scratch. {company}'s low-level systems focus matches my core strengths. Ready to contribute immediately."
+                elif is_frontend_web:
+                    custom_cover_letter = f"I deployed branda.ist using Astro and TypeScript with sub-1.5s load times and automated SEO. {company}'s frontend standards strongly resonate with my clean code and web performance focus."
+                else:
+                    custom_cover_letter = f"With a Software Engineering degree and rigorous systems training from 42 Istanbul, I thrive on solving complex technical challenges. Eager to contribute to {company}'s engineering objectives immediately."
                 if len(custom_cover_letter) > 400:
                     custom_cover_letter = custom_cover_letter[:396].rsplit(" ", 1)[0] + "..."
             else:

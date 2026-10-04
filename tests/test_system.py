@@ -114,7 +114,8 @@ class TestJobAutomatorSystem(unittest.TestCase):
         self.assertEqual(tr_review["verdict"], "RECOMMENDED")
         self.assertEqual(tr_review["language"], "tr")
         self.assertIn("branda.ist", tr_review["custom_cover_letter"])
-        self.assertIn("Sayın ModaTeknoloji Ekibi", tr_review["custom_cover_letter"])
+        self.assertIn("ModaTeknoloji", tr_review["custom_cover_letter"])
+        self.assertLessEqual(len(tr_review["custom_cover_letter"]), 400)
         # Sabit Kural: İlan Türkçe de olsa İngilizce Master ATS CV atanmalıdır
         self.assertTrue(Path(tr_review["recommended_cv_pdf"]).exists())
         self.assertIn("Omer_Faruk_Gokdas_CV_Master_ATS.pdf", tr_review["recommended_cv_pdf"])
@@ -129,8 +130,9 @@ class TestJobAutomatorSystem(unittest.TestCase):
         en_review = reviewer._heuristic_review(en_job)
         self.assertEqual(en_review["verdict"], "RECOMMENDED")
         self.assertEqual(en_review["language"], "en")
-        self.assertIn("Minishell", en_review["custom_cover_letter"])
-        self.assertIn("Dear RoboSystems Inc Team", en_review["custom_cover_letter"])
+        self.assertIn("42 Istanbul", en_review["custom_cover_letter"])
+        self.assertIn("RoboSystems Inc", en_review["custom_cover_letter"])
+        self.assertLessEqual(len(en_review["custom_cover_letter"]), 400)
         self.assertTrue(Path(en_review["recommended_cv_pdf"]).exists())
         self.assertIn("Omer_Faruk_Gokdas_CV_Master_ATS.pdf", en_review["recommended_cv_pdf"])
 
@@ -203,7 +205,6 @@ class TestJobAutomatorSystem(unittest.TestCase):
         self.assertIn(res["verdict"], ["RECOMMENDED", "BORDERLINE", "SKIP"])
         self.assertTrue(len(res["custom_cover_letter"]) > 50)
         self.assertLessEqual(len(res["custom_cover_letter"]), 400)
-        self.assertIn("Omer Faruk Gokdas", res["custom_cover_letter"])
         self.assertTrue(Path(res["recommended_cv_pdf"]).exists())
 
 if __name__ == "__main__":

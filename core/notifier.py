@@ -211,12 +211,12 @@ class TelegramNotifier:
 
         if cl_text:
             safe_cl = html.escape(cl_text)
-            cl_block = f"\n📋 <b>Kolay Başvuru Notu (Maks. 400 Karakter - Kopyalamak için dokunun):</b>\n<code>{safe_cl}</code>"
+            cl_block = f"\n💬 <b>LinkedIn Başvuru Mesajı (Top Choice / 0-400 Karakter — Dokun Kopyala):</b>\n<code>{safe_cl}</code>"
             if len(message + cl_block) < 3900:
                 sent = self.send_message((message + cl_block).strip(), reply_markup=reply_markup)
             else:
                 sent = self.send_message(message.strip(), reply_markup=reply_markup)
-                cl_msg = f"📋 <b>Kolay Başvuru Notu ({lang} - Kopyalamak için dokunun):</b>\n<code>{safe_cl}</code>"
+                cl_msg = f"💬 <b>LinkedIn Başvuru Mesajı ({lang} Top Choice — Dokun Kopyala):</b>\n<code>{safe_cl}</code>"
                 self.send_message(cl_msg.strip())
         else:
             sent = self.send_message(message.strip(), reply_markup=reply_markup)
