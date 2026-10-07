@@ -29,5 +29,6 @@ output/DAILY_REPORT_*.md
 !applications.db
 !tests/*.db
 
-# Scratch and debug files
+# Scratch, debug and user log files
 scratch/
+mesajlar.txt
