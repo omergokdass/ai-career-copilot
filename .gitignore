@@ -29,3 +29,5 @@ output/DAILY_REPORT_*.md
 !applications.db
 !tests/*.db
 
+# Scratch and debug files
+scratch/

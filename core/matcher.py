@@ -23,30 +23,35 @@ class JobMatcher:
         GENERIC_STOP_WORDS = {
             "support", "systems", "production", "ai", "operations", "troubleshooting",
             "infrastructure", "performance", "security", "testing", "ui", "dom", "css",
-            "apis", "llm", "development", "web", "mobile", "fullstack"
+            "apis", "llm", "development", "web", "mobile", "fullstack", "basics", "es6",
+            "foundations", "sharp", "commercial", "platform", "processes", "sorting",
+            "complexity", "architecture", "portfolio", "scripting", "sysadmin", "memory"
         }
         skills_map = {}
         for cat_data in self.profile["skills"].values():
             for item in cat_data["items"]:
                 clean_name = item.split("(")[0].strip()
-                if clean_name.lower() not in GENERIC_STOP_WORDS:
+                if clean_name.lower() not in GENERIC_STOP_WORDS and len(clean_name) > 1:
                     skills_map[clean_name.lower()] = clean_name
-                if item.lower() not in GENERIC_STOP_WORDS:
+                elif clean_name.lower() == "c":
+                    skills_map["c"] = "C"
+
+                if item.lower() not in GENERIC_STOP_WORDS and "(" not in item:
                     skills_map[item.lower()] = item
                 if "(" in item:
                     sub_items = item.split("(")[1].replace(")", "").split(",")
                     for sub in sub_items:
                         sub_clean = sub.strip()
-                        if sub_clean.lower() not in GENERIC_STOP_WORDS:
+                        if sub_clean.lower() not in GENERIC_STOP_WORDS and len(sub_clean) > 2:
                             skills_map[sub_clean.lower()] = sub_clean
 
         for exp in self.profile["experience"]:
             for tag in exp.get("tags", []):
-                if tag.lower() not in GENERIC_STOP_WORDS:
+                if tag.lower() not in GENERIC_STOP_WORDS and len(tag) > 1:
                     skills_map[tag.lower()] = tag
         for proj in self.profile["projects"]:
             for tag in proj.get("tags", []):
-                if tag.lower() not in GENERIC_STOP_WORDS:
+                if tag.lower() not in GENERIC_STOP_WORDS and len(tag) > 1:
                     skills_map[tag.lower()] = tag
 
         return skills_map
@@ -68,7 +73,8 @@ class JobMatcher:
             "inşaat", "civil engineer", "makine mühendisi", "mechanical engineer",
             "muhasebe", "accountant", "accounting", "mali müşavir", "satış", "sales rep",
             "sales representative", "pazarlama", "marketing specialist", "insan kaynakları",
-            "recruiter", "talent acquisition", "graphic designer", "ui/ux designer"
+            "recruiter", "talent acquisition", "graphic designer", "ui/ux designer",
+            "ziraat", "gıda mühendisi", "veteriner"
         ]
         if any(exc in title_lower for exc in HARD_EXCLUDED_TITLES):
             return {
@@ -81,45 +87,53 @@ class JobMatcher:
                 "fit_summary": f"Yazılım/Sistem dışı veya hedeflenmeyen alan pozisyonu: '{job_title}'."
             }
 
-        # 2. Adayın uzmanlık alanı dışındaki yazılım teknolojileri (.NET, Flutter, iOS vb.)
+        # 2. Adayın uzmanlık alanı dışındaki yazılım teknolojileri (.NET, C#, Flutter, iOS Native, Swift, Kotlin vb.)
         IRRELEVANT_TECH = [
             ".net", "c#", "flutter", "ios developer", "android developer",
-            "sap ", "salesforce", "abap"
+            "swift", "kotlin", "sap ", "salesforce", "abap", "unity", "unreal"
         ]
-        if any(irr in title_lower for irr in IRRELEVANT_TECH) and not any(k in title_lower for k in ["c++", "c ", "systems", "backend", "frontend", "web", "software", "yazılım"]):
-            return {
-                "match_score": 0.0,
-                "matched_skills": [],
-                "missing_skills": ["Alan Dışı Teknoloji (.NET/Flutter/iOS/SAP)"],
-                "is_recommended": False,
-                "is_senior": False,
-                "is_intern_or_grad": False,
-                "fit_summary": "Adayın uzmanlık alanı (Yazılım / Sistem / Web / Backend) dışındaki teknoloji yığını."
-            }
+        # Eğer başlıkta bu teknolojilerden biri açıkça rol olarak geçiyorsa kesinlikle ele
+        if any(irr in title_lower for irr in IRRELEVANT_TECH):
+            # Sadece C++ veya C pozisyonu olup metinde C# geçmeyen ilanlar istisnadır
+            if not ("c++" in title_lower and "c#" not in title_lower and ".net" not in title_lower):
+                return {
+                    "match_score": 0.0,
+                    "matched_skills": [],
+                    "missing_skills": ["Alan Dışı Teknoloji (.NET/C#/Flutter/iOS/Unity)"],
+                    "is_recommended": False,
+                    "is_senior": False,
+                    "is_intern_or_grad": False,
+                    "fit_summary": f"Adayın uzmanlık alanı dışındaki teknoloji yığını (.NET/C#/iOS/Flutter/Unity): '{job_title}'."
+                }
 
-        # 3. Yetenek Eşleşmesi (Tam kelime sınırı ile)
+        # 3. Yetenek Eşleşmesi (Tam ve güvenli kelime sınırı ile)
         matched_dict = {}
         for skill_key, official_name in self.candidate_skills.items():
-            pattern = r'\b' + re.escape(skill_key) + r'\b'
-            if re.search(pattern, combined_text):
+            if skill_key == "c":
+                # C dilini ararken C# ve C++ ile çakışmayı önle!
+                pattern = r'(?<![A-Za-z0-9_])c(?![A-Za-z0-9_#\+])'
+            else:
+                pattern = r'\b' + re.escape(skill_key) + r'\b'
+            
+            if re.search(pattern, combined_text, re.IGNORECASE):
                 matched_dict[official_name] = True
 
         # Doğrulanmış temel teknolojiler için sınırlandırılmış regex kontrolleri
-        if re.search(r'\b(typescript|ts)\b', combined_text):
+        if re.search(r'\b(typescript|ts)\b', combined_text, re.IGNORECASE):
             matched_dict["TypeScript"] = True
-        if re.search(r'\bastro\b', combined_text):
+        if re.search(r'\bastro\b', combined_text, re.IGNORECASE):
             matched_dict["Astro"] = True
-        if re.search(r'\breact native\b|react-native', combined_text):
+        if re.search(r'\breact native\b|react-native', combined_text, re.IGNORECASE):
             matched_dict["React Native"] = True
-        elif re.search(r'\breact\b|\breact\.js\b', combined_text):
+        elif re.search(r'\breact\b|\breact\.js\b', combined_text, re.IGNORECASE):
             matched_dict["React"] = True
-        if re.search(r'\bnestjs\b|\bnest\.js\b', combined_text):
+        if re.search(r'\bnestjs\b|\bnest\.js\b', combined_text, re.IGNORECASE):
             matched_dict["NestJS"] = True
-        if re.search(r'\bprisma\b', combined_text):
+        if re.search(r'\bprisma\b', combined_text, re.IGNORECASE):
             matched_dict["Prisma ORM"] = True
-        if re.search(r'\bsupabase\b', combined_text):
+        if re.search(r'\bsupabase\b', combined_text, re.IGNORECASE):
             matched_dict["Supabase"] = True
-        if re.search(r'\bsocket\.io\b|\bwebsockets?\b', combined_text):
+        if re.search(r'\bsocket\.io\b|\bwebsockets?\b', combined_text, re.IGNORECASE):
             matched_dict["Socket.IO"] = True
 
         matched_skills = list(matched_dict.keys())
@@ -133,34 +147,42 @@ class JobMatcher:
         missing_skills = []
         for tech in COMMON_TECH_POOL:
             pattern = r'\b' + re.escape(tech) + r'\b'
-            if re.search(pattern, combined_text):
+            if re.search(pattern, combined_text, re.IGNORECASE):
                 if not any(tech == k.lower() or tech in k.lower() for k in self.candidate_skills.keys()):
                     missing_skills.append(tech.upper() if len(tech) <= 4 else tech.title())
 
-        # 3. Kıdem Seviyesi Tespiti (Senior / Lead / Intern / New Grad)
+        # 4. Kıdem Seviyesi Tespiti (Senior / Lead / Intern / New Grad)
         is_senior = bool(re.search(r'\b(senior|sr|lead|principal|staff|architect|manager|director)\b', title_lower))
         is_intern_or_grad = any(k in title_lower or k in desc_lower[:400] for k in [
             "intern", "staj", "stajyer", "trainee", "talent program", 
             "genç yetenek", "graduate", "new grad", "entry level", "junior"
         ])
 
-        # 4. Puanlama Matematiği
+        # 5. Puanlama Matematiği (Sıfır Yetenekle Barajı Geçmeyi Engelleyen Mimari)
+        matched_count = len(matched_skills)
+
+        # Temel Kural: Adayın portföyünden EN AZ 1 teknik beceri eşleşmedikçe barajı geçemez!
+        if matched_count == 0:
+            total_score = 25.0 if is_intern_or_grad else 15.0
+            return {
+                "match_score": total_score,
+                "matched_skills": [],
+                "missing_skills": missing_skills[:4],
+                "is_recommended": False,
+                "is_senior": is_senior,
+                "is_intern_or_grad": is_intern_or_grad,
+                "fit_summary": f"Adayın teknik yetenekleriyle örtüşen beceri bulunamadı (%{total_score:.1f})."
+            }
+
         title_score = 0
         if any(role in title_lower for role in ["software engineer", "yazılım", "c++", "systems", "backend", "frontend", "web", "mobile", "ai"]):
-            title_score = 35
+            title_score = 30
         elif any(role in title_lower for role in ["full stack", "developer", "engineer", "it support", "destek"]):
-            title_score = 25
+            title_score = 20
 
-        matched_count = len(matched_skills)
-        skill_score = min(matched_count * 10, 50)
-
-        # Staj / Genç Yetenek / New Grad Bonusu (+20 Puan)
-        bonus_score = 20 if is_intern_or_grad else 0
-
-        # Senior / Kıdemli Pozisyon Düşürmesi (-20 Puan)
+        skill_score = min(matched_count * 12, 50)
+        bonus_score = 15 if is_intern_or_grad else 0
         senior_penalty = 20 if is_senior else 0
-
-        # Eksik teknoloji cezası
         penalty = min(len(missing_skills) * 3, 12) + senior_penalty
 
         total_score = max(0.0, min(100.0, float(title_score + skill_score + bonus_score - penalty)))

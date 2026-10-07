@@ -35,7 +35,7 @@ class AIReviewer:
             self.rules = yaml.safe_load(f)
             
         self.gemini_api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-        self.gemini_model = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash").strip()
+        self.gemini_model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
         max_calls_env = os.environ.get("MAX_AI_CALLS_PER_RUN", "").strip()
         self.max_api_calls_per_run = int(max_calls_env) if max_calls_env else None
         self.api_call_count = 0
@@ -47,15 +47,15 @@ class AIReviewer:
         İlanı derinlemesine inceler:
         1. Eğer GEMINI_API_KEY mevcutsa, devre kesici tetiklenmemişse Google Gemini çağrılır.
         2. Herhangi bir yapay sayı kısıtlaması yoktur; barajı geçen tüm ilanlar Gemini ile değerlendirilir.
-        3. Üst üste 3 kritik API hatası alınırsa güvenlik amacıyla yerel kural motoruna geri dönülür.
+        3. Üst üste 4 kritik API hatası alınırsa güvenlik amacıyla yerel kural motoruna geri dönülür.
         """
         if self.gemini_api_key and not self.circuit_broken:
             if self.max_api_calls_per_run is not None and self.api_call_count >= self.max_api_calls_per_run:
                 print(f"[AIReviewer Kota Kilidi] Belirlenen AI istek sınırına ({self.max_api_calls_per_run}) ulaşıldı. Kalan ilanlar yerel kural motoruyla işlenecek.")
                 return self._heuristic_review(job)
 
-            # Kota aşımı (15 RPM) önlemek için istekler arasına 1.5 saniye nezaket gecikmesi
-            time.sleep(1.5)
+            # Kota aşımı (15 RPM) önlemek için istekler arasına 1.2 saniye nezaket gecikmesi
+            time.sleep(1.2)
             gemini_result = self._review_with_gemini(job)
             if gemini_result:
                 self.api_call_count += 1
@@ -63,68 +63,63 @@ class AIReviewer:
                 return gemini_result
             else:
                 self.consecutive_errors += 1
-                if self.consecutive_errors >= 2:
+                if self.consecutive_errors >= 4:
                     self.circuit_broken = True
                     print(f"[AIReviewer Devre Kesici] Üst üste {self.consecutive_errors} kez API hatası alındı. Döngüyü ve kotayı korumak için API devre dışı bırakıldı. Kalan ilanlar yerel motorla işlenecek.")
 
         return self._heuristic_review(job)
 
     def _call_gemini_api(self, prompt: str, model_name: Optional[str] = None) -> Optional[str]:
-        """Google Generative Language REST API üzerinden Gemini modelini çağırır."""
-        model = model_name or self.gemini_model
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_api_key}"
-        
-        payload = {
-            "contents": [
-                {
-                    "parts": [{"text": prompt}]
+        """Google Generative Language REST API üzerinden Gemini modelini ve fallback zincirini çağırır."""
+        candidates_models = [model_name or self.gemini_model, "gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-pro", "gemini-2.5-flash-lite"]
+        # Tekrarsız sıra
+        unique_models = []
+        for m in candidates_models:
+            if m and m not in unique_models:
+                unique_models.append(m)
+
+        for model in unique_models:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_api_key}"
+            payload = {
+                "contents": [
+                    {
+                        "parts": [{"text": prompt}]
+                    }
+                ],
+                "generationConfig": {
+                    "temperature": 0.2,
+                    "responseMimeType": "application/json"
                 }
-            ],
-            "generationConfig": {
-                "temperature": 0.2,
-                "responseMimeType": "application/json"
             }
-        }
-        
-        try:
-            req_data = json.dumps(payload).encode("utf-8")
-            req = urllib.request.Request(
-                url,
-                data=req_data,
-                headers={"Content-Type": "application/json"}
-            )
-            with urllib.request.urlopen(req, timeout=20) as resp:
-                resp_json = json.loads(resp.read().decode("utf-8"))
-                candidates = resp_json.get("candidates", [])
-                if candidates:
-                    parts = candidates[0].get("content", {}).get("parts", [])
-                    if parts:
-                        return parts[0].get("text", "")
-        except urllib.error.HTTPError as e:
-            # Rate limit (429) durumunda bekle ve bir kez daha dene
-            if e.code == 429:
-                print(f"[AIReviewer] Gemini API Kota Limiti (429). 6 saniye beklenip tekrar deneniyor...")
-                time.sleep(6)
-                try:
-                    with urllib.request.urlopen(req, timeout=20) as resp:
-                        resp_json = json.loads(resp.read().decode("utf-8"))
-                        candidates = resp_json.get("candidates", [])
-                        if candidates:
-                            parts = candidates[0].get("content", {}).get("parts", [])
-                            if parts:
-                                return parts[0].get("text", "")
-                except Exception as retry_err:
-                    print(f"[AIReviewer] Gemini API Retry Hatası: {retry_err}")
-            # Model bulunamadıysa (404) sırayla fallback modelleri dene
-            elif e.code == 404:
-                fallbacks = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-2.5-flash"]
-                for fb in fallbacks:
-                    if fb != model:
-                        return self._call_gemini_api(prompt, model_name=fb)
-            print(f"[AIReviewer] Gemini API HTTP Hatası ({e.code}): {e.reason}")
-        except Exception as e:
-            print(f"[AIReviewer] Gemini API Bağlantı Hatası: {e}")
             
+            try:
+                req_data = json.dumps(payload).encode("utf-8")
+                req = urllib.request.Request(
+                    url,
+                    data=req_data,
+                    headers={"Content-Type": "application/json"}
+                )
+                with urllib.request.urlopen(req, timeout=25) as resp:
+                    resp_json = json.loads(resp.read().decode("utf-8"))
+                    candidates = resp_json.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts:
+                            return parts[0].get("text", "")
+            except urllib.error.HTTPError as e:
+                # 429 veya 503 durumunda kısa bekle ve bir sonraki fallback modele geç
+                if e.code in (429, 503):
+                    print(f"[AIReviewer] Gemini API ({model}) yoğunluk/kota ({e.code}). Alternatif model deneniyor...")
+                    time.sleep(2)
+                    continue
+                elif e.code == 404:
+                    continue
+                else:
+                    print(f"[AIReviewer] Gemini API HTTP Hatası ({model} - {e.code}): {e.reason}")
+            except Exception as e:
+                print(f"[AIReviewer] Gemini API Bağlantı Hatası ({model}): {e}")
+                continue
+                
         return None
 
     def _review_with_gemini(self, job: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -309,10 +304,7 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
         is_borderline = (50.0 <= match_score < 70.0)
 
         if lang == "tr":
-            if is_mobile_or_ai:
-                project_story = "Geliştirdiğim CoupleOS projesinde React Native (Expo) ve NestJS mimarisi üzerinde çiftler için uçtan uca gerçek zamanlı bir mobil uygulama inşa ettim. Bu süreçte Zustand ile durum yönetimini kurarken, Socket.IO ile canlı veri senkronizasyonu sağladım ve Google Gemini ile OpenAI API'lerini entegre ederek hata toleranslı çoklu yapay zeka (LLM) veri akışları kurguladım."
-                best_project = "CoupleOS (Mobil & Çoklu LLM Mimarisi)"
-            elif is_systems_cpp:
+            if is_systems_cpp:
                 project_story = "42 Istanbul'un zorlu ve test odaklı sistem programlama eğitimi kapsamında Valgrind ile doğrulanmış, bellek sızıntısız Minishell Unix kabuğunu (POSIX sistem çağrıları, pipe, fork, sinyal yönetimi) ve POSIX mutex senkronizasyonlu Dining Philosophers eşzamanlılık projelerini geliştirdim."
                 best_project = "Minishell & Philosophers (42 Istanbul)"
             elif is_backend_node:
@@ -321,6 +313,9 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
             elif is_frontend_web:
                 project_story = "Astro ve TypeScript kullanarak 80'den fazla sayfadan oluşan ticari branda.ist platformunu hayata geçirdim; Sharp ve PurgeCSS optimizasyonlarıyla sayfa yükleme sürelerini 1.5 saniyenin altına indirirken programatik SEO altyapısını inşa ettim."
                 best_project = "branda.ist (Ticari Web Platformu — Astro & TypeScript)"
+            elif is_mobile_or_ai:
+                project_story = "Geliştirdiğim CoupleOS projesinde React Native (Expo) ve NestJS mimarisi üzerinde çiftler için uçtan uca gerçek zamanlı bir mobil uygulama inşa ettim. Bu süreçte Zustand ile durum yönetimini kurarken, Socket.IO ile canlı veri senkronizasyonu sağladım ve Google Gemini ile OpenAI API'lerini entegre ederek hata toleranslı çoklu yapay zeka (LLM) veri akışları kurguladım."
+                best_project = "CoupleOS (Mobil & Çoklu LLM Mimarisi)"
             elif is_it_support:
                 project_story = "Beşiktaş Belediyesi Bilgi İşlem Müdürlüğü stajımda 500'den fazla iş istasyonunda Active Directory yönetimi, TCP/IP ağ sorun giderme ve rutin operasyonların otomasyonu için Bash betikleri geliştirdim."
                 best_project = "BT Stajı (Beşiktaş Belediyesi)"
@@ -337,14 +332,14 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
             p3 = f"Herhangi bir ihbar sürem (0 gün) bulunmamakta olup, ekibinize tam zamanlı olarak hemen katılabilirim. {company} ekibinin mühendislik hedefleri doğrultusunda sorumluluk almaktan heyecan duyuyorum. Detaylı özgeçmişim ekte yer almakta olup, niteliklerimi bir mülakatta aktarmaktan mutluluk duyarım."
 
             if is_easy_apply:
-                if is_mobile_or_ai:
-                    custom_cover_letter = f"CoupleOS projemde React Native ve NestJS üzerinde çoklu LLM (Gemini/OpenAI) entegrasyonu ve gerçek zamanlı mimari kurdum. {company}'ın bu alandaki hedefleri tam olarak odaklandığım mühendislik derinliğiyle örtüşüyor. 42 İstanbul sistem disiplinimle ekibinize hemen adapte olabilirim."
-                elif is_systems_cpp:
+                if is_systems_cpp:
                     custom_cover_letter = f"42 Istanbul'da C ile POSIX Unix Minishell ve mutex senkronizasyonlu multithread sistemler geliştirdim. {company}'ın düşük seviye sistem altyapısı mühendislik temellerimle birebir uyuşuyor. Sıfır ihbar süresiyle ekibinize hemen değer katabilirim."
-                elif is_frontend_web:
-                    custom_cover_letter = f"Astro ve TypeScript ile 80+ sayfalık canlı branda.ist platformunu sub-1.5s hız ve SEO optimizasyonuyla yayına aldım. {company}'ın modern web ve kullanıcı deneyimi standartlarına ilk günden somut katkı sunmaya hazırım."
                 elif is_backend_node:
                     custom_cover_letter = f"NestJS, Node.js ve PostgreSQL üzerinde ilişkisel veri modelleme ve Socket.IO canlı veri akışları inşa ettim. {company} backend hedefleriniz için temiz ve ölçeklenebilir mimari üretmeye hazırım."
+                elif is_frontend_web:
+                    custom_cover_letter = f"Astro ve TypeScript ile 80+ sayfalık canlı branda.ist platformunu sub-1.5s hız ve SEO optimizasyonuyla yayına aldım. {company}'ın modern web ve kullanıcı deneyimi standartlarına ilk günden somut katkı sunmaya hazırım."
+                elif is_mobile_or_ai:
+                    custom_cover_letter = f"CoupleOS projemde React Native ve NestJS üzerinde çoklu LLM (Gemini/OpenAI) entegrasyonu ve gerçek zamanlı mimari kurdum. {company}'ın bu alandaki hedefleri tam olarak odaklandığım mühendislik derinliğiyle örtüşüyor. 42 İstanbul sistem disiplinimle ekibinize hemen adapte olabilirim."
                 else:
                     custom_cover_letter = f"42 İstanbul'un derin sistem programlama ve algoritmik problem çözme disipliniyle yetiştim. {company}'ın mühendislik hedefleri üzerinde çalışmak istediğim alanla birebir örtüşüyor. Tam zamanlı olarak hemen başlayabilirim."
                 if len(custom_cover_letter) > 400:
@@ -359,26 +354,28 @@ Lütfen çıktıyı SADECE geçerli bir JSON nesnesi olarak şu şemada döndür
 
         else:
             # English
-            if is_mobile_or_ai:
-                best_project = "CoupleOS (Mobile & Multi-LLM Architecture)"
-            elif is_systems_cpp:
+            if is_systems_cpp:
                 best_project = "Minishell & Philosophers (42 Istanbul)"
             elif is_backend_node:
                 best_project = "CoupleOS & NishChat (Backend & Real-Time APIs)"
             elif is_frontend_web:
                 best_project = "branda.ist (Commercial Web Platform — Astro & TypeScript)"
+            elif is_mobile_or_ai:
+                best_project = "CoupleOS (Mobile & Multi-LLM Architecture)"
             elif is_it_support:
                 best_project = "IT Internship (Besiktas Municipality)"
             else:
                 best_project = "42 Istanbul & Software Engineering Foundations"
 
             if is_easy_apply:
-                if is_mobile_or_ai:
-                    custom_cover_letter = f"In CoupleOS, I architected production multi-LLM pipelines with OpenAI/Gemini and NestJS/React Native. {company}'s vision aligns directly with my engineering focus. Available immediately with zero notice period."
-                elif is_systems_cpp:
+                if is_systems_cpp:
                     custom_cover_letter = f"At 42 Istanbul, I built Unix process pipelines and multithreaded mutex concurrency in C from scratch. {company}'s low-level systems focus matches my core strengths. Ready to contribute immediately."
+                elif is_backend_node:
+                    custom_cover_letter = f"With NestJS, Node.js and PostgreSQL, I built scalable APIs and real-time Socket.IO streams in production. {company}'s backend needs match my direct stack. Available immediately."
                 elif is_frontend_web:
                     custom_cover_letter = f"I deployed branda.ist using Astro and TypeScript with sub-1.5s load times and automated SEO. {company}'s frontend standards strongly resonate with my clean code and web performance focus."
+                elif is_mobile_or_ai:
+                    custom_cover_letter = f"In CoupleOS, I architected production multi-LLM pipelines with OpenAI/Gemini and NestJS/React Native. {company}'s vision aligns directly with my engineering focus. Available immediately with zero notice period."
                 else:
                     custom_cover_letter = f"With a Software Engineering degree and rigorous systems training from 42 Istanbul, I thrive on solving complex technical challenges. Eager to contribute to {company}'s engineering objectives immediately."
                 if len(custom_cover_letter) > 400:

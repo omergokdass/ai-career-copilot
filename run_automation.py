@@ -21,7 +21,7 @@ if sys.stdout.encoding != 'utf-8':
 from core.db import ApplicationDB
 from core.builder import ResumeBuilder, load_master_profile
 from core.matcher import JobMatcher
-from core.scraper import LinkedInScraper
+from core.scraper import MultiPlatformScraper
 from core.applicator import ApplicationGuardrail
 from core.ai_reviewer import AIReviewer
 from core.notifier import TelegramNotifier
@@ -40,32 +40,24 @@ class JobAutomatorOrchestrator:
         self.db = ApplicationDB()
         self.builder = ResumeBuilder()
         self.matcher = JobMatcher()
-        self.scraper = LinkedInScraper()
+        self.scraper = MultiPlatformScraper()
         self.guardrail = ApplicationGuardrail(self.profile)
         self.ai_reviewer = AIReviewer()
         self.notifier = TelegramNotifier()
 
     def _select_queries_for_shift(self, all_queries: List[str], shift_mode: str = "auto") -> tuple[List[str], str]:
-        """Arama sorgularını 2 ana zaman dilimine böler (10:05 ve 14:05 TSI) veya tümünü seçer."""
-        if shift_mode == "all" or len(all_queries) <= 6:
-            return all_queries, "Tüm Kategoriler (Tam Tarama)"
-
-        half = (len(all_queries) + 1) // 2
-        shifts = {
-            "1": (all_queries[0:half], "Vardiya 1 (10:05): Genç Yetenek, Staj, C/C++ & Sistem, Junior Backend"),
-            "2": (all_queries[half:], "Vardiya 2 (14:05): Frontend, Web, Mobil, AI Engineer & IT Destek")
-        }
-
-        if shift_mode in shifts:
-            return shifts[shift_mode]
-
-        # "auto" ise Türkiye saatine (UTC+3) göre vardiya seç (Saat 12:00 öncesi Vardiya 1, 12:00 sonrası Vardiya 2)
+        """Tüm kategorileri tam kapsamlı tarar. Çalışma saatine göre dalga etiketini belirler."""
         tr_tz = timezone(timedelta(hours=3))
         now_hour = datetime.now(tr_tz).hour
-        if now_hour < 12:
-            return shifts["1"]
+
+        if shift_mode == "1" or (shift_mode == "auto" and now_hour < 13):
+            label = "1. Dalga (10:05): Tüm Kategoriler Tam Tarama (Sabah İlanları)"
+        elif shift_mode == "2" or (shift_mode == "auto" and now_hour >= 13):
+            label = "2. Dalga (15:00): Tüm Kategoriler Tam Tarama (Öğle / Kapanış İlanları)"
         else:
-            return shifts["2"]
+            label = "Tam Kapsamlı Tarama: Tüm Kategoriler (LinkedIn + Kariyer.net)"
+
+        return all_queries, label
 
     def run_daily_pipeline(self, max_jobs_per_query: Optional[int] = None, shift: str = "auto", time_filter_override: Optional[str] = None) -> Dict[str, Any]:
         all_queries = self.criteria.get("search_queries", ["Junior Software Engineer", "Backend Developer"])
@@ -76,12 +68,15 @@ class JobAutomatorOrchestrator:
         print(f"📌 Dilim: {shift_label} ({len(queries)} sorgu taranacak)")
         print(f"{'='*70}")
 
-        locations = self.criteria.get("target_locations", ["Istanbul, Turkey"])
+        locations = self.criteria.get("target_locations", ["Istanbul, Turkey", "Remote"])
+        primary_loc = locations[0] if locations else "Istanbul, Turkey"
+        extra_locs = locations[1:] if len(locations) > 1 else []
+
         min_score = self.criteria.get("min_match_score", 50.0)
         time_filter = time_filter_override if time_filter_override is not None else self.criteria.get("time_filter", "r86400")
         sort_by = self.criteria.get("sort_by", "DD")
         experience_levels = self.criteria.get("experience_levels", ["1", "2", "3"])
-        jobs_limit = max_jobs_per_query if max_jobs_per_query is not None else self.criteria.get("jobs_per_query", None)
+        jobs_limit = max_jobs_per_query if max_jobs_per_query is not None else self.criteria.get("jobs_per_query", 10)
 
         scanned_in_batch = 0
         matched_in_batch = 0
@@ -91,15 +86,31 @@ class JobAutomatorOrchestrator:
 
         for query in queries:
             limit_str = f"Limit: {jobs_limit}" if jobs_limit else "Tüm Son 24 Saat İlanları"
-            print(f"\n🔍 Aranıyor: '{query}' ({locations[0]} | Filtre: {time_filter} | {limit_str})...")
+            print(f"\n🔍 Aranıyor: '{query}' ({primary_loc} + Remote | Filtre: {time_filter} | {limit_str})...")
             found_jobs = self.scraper.search_jobs(
                 query, 
-                location=locations[0], 
+                location=primary_loc, 
                 limit=jobs_limit,
                 time_filter=time_filter,
                 sort_by=sort_by,
                 experience_levels=experience_levels
             )
+
+            # Ek lokasyonlar (Remote / Uzaktan Çalışma) taraması
+            for eloc in extra_locs:
+                if eloc == "Remote":
+                    r_jobs = self.scraper.search_jobs(
+                        query,
+                        location="Remote",
+                        limit=3,
+                        time_filter=time_filter,
+                        sort_by=sort_by,
+                        experience_levels=experience_levels
+                    )
+                    for rj in r_jobs:
+                        if not any(j["job_url"] == rj["job_url"] for j in found_jobs):
+                            found_jobs.append(rj)
+
             print(f"   -> {len(found_jobs)} ilan bulundu.")
 
             for job in found_jobs:
@@ -119,22 +130,10 @@ class JobAutomatorOrchestrator:
                 desc = job_details.get("description", "")
                 is_easy_apply = job_details.get("is_easy_apply", False)
 
+                platform_name = job.get("platform", "LinkedIn")
                 if not desc or len(desc) < 40:
-                    print(f"   ⚠️ İlan açıklaması LinkedIn'den çekilemedi veya erişim kısıtlı. Güvenlik gereği atlanıyor.")
-                    job_info = {
-                        "company": company,
-                        "position": position,
-                        "job_url": job_url,
-                        "location": job.get("location", ""),
-                        "platform": "LinkedIn",
-                        "match_score": 0.0,
-                        "matched_skills": [],
-                        "missing_skills": ["Açıklama Alınamadı"],
-                        "status": "SKIPPED",
-                        "pending_reason": "İlan açıklaması LinkedIn tarafından sunulmadı (erişim kısıtı / boş metin).",
-                        "notes": "Eksik açıklama"
-                    }
-                    self.db.record_job(job_info)
+                    print(f"   ⚠️ İlan açıklaması {platform_name}'den geçici olarak çekilemedi. Sonraki taramada tekrar denenecek.")
+                    # Veritabanına SKIPPED kaydedilmiyor, böylece kalıcı olarak kara listeye düşmez!
                     continue
 
                 # Uyum analizini yap
@@ -152,7 +151,7 @@ class JobAutomatorOrchestrator:
                     "position": position,
                     "job_url": job_url,
                     "location": job["location"],
-                    "platform": "LinkedIn",
+                    "platform": platform_name,
                     "match_score": score,
                     "matched_skills": matched_skills,
                     "missing_skills": missing_skills,
@@ -190,6 +189,10 @@ class JobAutomatorOrchestrator:
                 verdict = ai_review.get("verdict", "RECOMMENDED")
                 lang = ai_review.get("language", "en")
                 rec_pdf = ai_review.get("recommended_cv_pdf")
+                ai_score = ai_review.get("match_score")
+                if ai_score is not None:
+                    job_info["match_score"] = round(float(ai_score), 1)
+
                 job_info["language"] = lang
                 job_info["recommended_cv_path"] = rec_pdf
                 job_info["highlighted_project"] = ai_review.get("highlighted_project", "")

@@ -1,14 +1,14 @@
 name: Daily Job Application Pipeline
 
+# Tetikleme Modeli: cron-job.org tarafından yönetilen %100 dakik REST API tetiklemesi (workflow_dispatch)
+# GitHub Actions'ın dahili 'schedule' cron'u sunucu yoğunluğu nedeniyle 6-8 saat gecikmelere
+# ve akşam saatlerinde (17, 18, 20, 23) sahte/çift tetiklenmelere yol açtığı için kaldırılmıştır.
+# Tüm zamanlama kontrolü ve vardiya saatleri cron-job.org paneli üzerinden tam vaktinde yürütülür.
 on:
-  schedule:
-    # 2 Günlük Vardiya (Türkiye Saati: 10:05 ve 14:05 TSI)
-    - cron: '5 7 * * *'    # 10:05 TSI (UTC 07:05) -> Vardiya 1
-    - cron: '5 11 * * *'   # 14:05 TSI (UTC 11:05) -> Vardiya 2
   workflow_dispatch:
     inputs:
       shift:
-        description: 'Çalıştırılacak Vardiya'
+        description: 'Çalıştırılacak Vardiya (1, 2, 3, 4, auto, all)'
         required: false
         default: 'auto'
         type: choice
@@ -16,6 +16,8 @@ on:
           - 'auto'
           - '1'
           - '2'
+          - '3'
+          - '4'
           - 'all'
 
 permissions:
@@ -51,14 +53,8 @@ jobs:
         id: select-shift
         run: |
           INPUT_SHIFT="${{ inputs.shift }}"
-          SCHEDULE="${{ github.event.schedule }}"
-
-          if [ -n "$INPUT_SHIFT" ] && [ "$INPUT_SHIFT" != "auto" ]; then
+          if [ -n "$INPUT_SHIFT" ]; then
             CHOSEN_SHIFT="$INPUT_SHIFT"
-          elif [ "$SCHEDULE" = "5 7 * * *" ]; then
-            CHOSEN_SHIFT="1"
-          elif [ "$SCHEDULE" = "5 11 * * *" ]; then
-            CHOSEN_SHIFT="2"
           else
             CHOSEN_SHIFT="auto"
           fi
@@ -69,7 +65,7 @@ jobs:
       - name: Günlük İlan Taramasını ve AI Analizini Çalıştır
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL || 'gemini-3.8-flash' }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL || 'gemini-2.5-flash' }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_ENABLED: 'true'

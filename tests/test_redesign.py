@@ -49,17 +49,27 @@ class TestRedesignAndFixes(unittest.TestCase):
         )
         self.assertIn("TypeScript", res_ts["matched_skills"])
 
-    def test_two_shift_distribution(self):
+    def test_dual_wave_full_coverage(self):
         all_queries = self.orchestrator.criteria.get("search_queries", [])
-        self.assertEqual(len(all_queries), 12, "Toplam 12 sorgu olmalı")
+        self.assertGreaterEqual(len(all_queries), 10, "En az 10 arama sorgusu olmalı")
 
+        # 1. Dalga (Sabah) tüm sorguları kapsamalı
         q1, label1 = self.orchestrator._select_queries_for_shift(all_queries, shift_mode="1")
-        self.assertEqual(len(q1), 6, "Vardiya 1'de 6 sorgu olmalı")
-        self.assertIn("Vardiya 1", label1)
+        self.assertEqual(len(q1), len(all_queries), "1. Dalgada tüm kategoriler taranmalı")
+        self.assertIn("1. Dalga", label1)
 
+        # 2. Dalga (Öğle) tüm sorguları kapsamalı
         q2, label2 = self.orchestrator._select_queries_for_shift(all_queries, shift_mode="2")
-        self.assertEqual(len(q2), 6, "Vardiya 2'de 6 sorgu olmalı")
-        self.assertIn("Vardiya 2", label2)
+        self.assertEqual(len(q2), len(all_queries), "2. Dalgada tüm kategoriler taranmalı")
+        self.assertIn("2. Dalga", label2)
+
+    def test_c_sharp_does_not_match_c_language(self):
+        csharp_job = self.matcher.analyze_job(
+            "Game Developer (Unity)",
+            "Required skills: C#, Unity 3D, game logic, animation."
+        )
+        self.assertFalse(csharp_job["is_recommended"])
+        self.assertNotIn("C", csharp_job["matched_skills"])
 
     def test_cover_letter_easy_apply_and_length_limit(self):
         # 1. Dış portal başvurusu (Easy Apply DEĞİL) -> Cover letter BOŞ olmalı

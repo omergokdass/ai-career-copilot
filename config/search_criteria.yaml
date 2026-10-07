@@ -1,39 +1,46 @@
 # ==============================================================================
-# İŞ ARAMA KRİTERLERİ (ÖMER FARUK GÖKDAŞ - 2 VARDİYALI & KISITLAMASIZ SON 24 SAAT)
+# İŞ ARAMA KRİTERLERİ (ÖMER FARUK GÖKDAŞ - TAM KAPSAMLI ÇİFT DALGA TARAMA)
 # ==============================================================================
 
 search_queries:
-  # ============================================================================
-  # VARDİYA 1 (10:05 TSI): Genç Yetenek, Staj, C/C++ & Sistem, Junior Backend
-  # ============================================================================
+  # Genç Yetenek & Staj
   - "Software Engineering Intern"
   - "Genç Yetenek Yazılım"
   - "Junior Software Engineer"
+  
+  # C/C++ & Sistem
   - "Junior C++ Developer"
   - "C++ Developer"
-  - "Junior Backend Developer"
 
-  # ============================================================================
-  # VARDİYA 2 (14:05 TSI): Frontend & Web, Mobil (React Native), AI & IT Destek
-  # ============================================================================
+  # Backend & Veritabanı
+  - "Junior Backend Developer"
+  - "Node.js Developer"
+  - "NestJS Developer"
+
+  # Frontend & Web & Mobil
   - "Junior Frontend Developer"
   - "TypeScript Developer"
   - "React Native Developer"
+
+  # AI & Sistem / IT Destek
   - "Junior AI Engineer"
   - "AI Developer"
   - "IT Support Specialist"
 
 target_locations:
   - "Istanbul, Turkey"
-  - "Turkey"
   - "Remote"
 
-time_filter: "r86400"  # Son 24 saatteki tüm ilanlar
-sort_by: "DD"          # En güncel ilanlar öncelikli (Date Descending)
+platforms:
+  - "LinkedIn"
+  - "Kariyer.net"
+
+time_filter: "r86400"  # Son 24 saatteki tüm güncel ilanlar
+sort_by: "DD"          # En yeni ilanlar en üstte (Date Descending)
 experience_levels: ["1", "2", "3"]
 work_types: ["Remote", "Hybrid", "On-site"]
 
 min_match_score: 50.0
 
-# İlan sayısı kısıtlaması kaldırıldı (null: son 24 saatteki tüm ilanlar taranır)
-jobs_per_query: null
+# Sorgu başına taranacak maksimum ilan sayısı (Dengeli ve hızlı)
+jobs_per_query: 10

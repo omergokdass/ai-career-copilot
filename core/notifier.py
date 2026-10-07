@@ -155,9 +155,17 @@ class TelegramNotifier:
         missing_str = html.escape(", ".join(missing_skills[:4])) if missing_skills else "Kritik eksik yok"
 
         # Başvuru Kanalı Etiketi
+        platform = job_info.get("platform", "LinkedIn")
         is_easy = (status == "READY_TO_APPLY")
-        channel_badge = "⚡ <b>LINKEDIN KOLAY BAŞVURU</b>" if is_easy else "🌐 <b>ŞİRKET PORTALI / DIŞ BAŞVURU</b>"
-        btn_text = "⚡ Kolay Başvur (LinkedIn)" if is_easy else "🌐 Şirket Portalında Başvur"
+        if platform == "Kariyer.net":
+            channel_badge = "🇹🇷 <b>KARİYER.NET İLANI</b>"
+            btn_text = "🌐 Kariyer.net'te Başvur"
+        elif is_easy:
+            channel_badge = "⚡ <b>LINKEDIN KOLAY BAŞVURU</b>"
+            btn_text = "⚡ Kolay Başvur (LinkedIn)"
+        else:
+            channel_badge = "🌐 <b>ŞİRKET PORTALI / DIŞ BAŞVURU</b>"
+            btn_text = "🌐 Şirket Portalında Başvur"
 
         is_intern = job_info.get("is_intern_or_grad", False)
         is_senior = job_info.get("is_senior", False)
