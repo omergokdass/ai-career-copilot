@@ -35,7 +35,7 @@ class AIReviewer:
             self.rules = yaml.safe_load(f)
             
         self.gemini_api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-        self.gemini_model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+        self.gemini_model = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash").strip()
         max_calls_env = os.environ.get("MAX_AI_CALLS_PER_RUN", "").strip()
         self.max_api_calls_per_run = int(max_calls_env) if max_calls_env else None
         self.api_call_count = 0
@@ -71,7 +71,7 @@ class AIReviewer:
 
     def _call_gemini_api(self, prompt: str, model_name: Optional[str] = None) -> Optional[str]:
         """Google Generative Language REST API üzerinden Gemini modelini ve fallback zincirini çağırır."""
-        candidates_models = [model_name or self.gemini_model, "gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-pro", "gemini-2.5-flash-lite"]
+        candidates_models = [model_name or self.gemini_model, "gemini-3.5-flash", "gemini-3.8-flash", "gemini-flash-latest"]
         # Tekrarsız sıra
         unique_models = []
         for m in candidates_models:

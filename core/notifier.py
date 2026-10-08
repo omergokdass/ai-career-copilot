@@ -170,12 +170,12 @@ class TelegramNotifier:
         is_intern = job_info.get("is_intern_or_grad", False)
         is_senior = job_info.get("is_senior", False)
 
-        if is_intern:
-            header = "🎓 <b>GENÇ YETENEK / STAJ FIRSATI</b>"
-            status_desc = "Staj, mezun veya genç yetenek programı. Doğrudan senin seviyene uygun yüksek öncelikli fırsat!"
-        elif is_senior:
+        if is_senior:
             header = "💼 <b>KIDEMLİ / DENENEBİLİR İLAN</b>"
             status_desc = "İşveren kıdemli/deneyimli arasa da temel teknoloji yığının güçlü örtüştüğü için şansını deneyebilirsin."
+        elif is_intern:
+            header = "🎓 <b>GENÇ YETENEK / STAJ FIRSATI</b>"
+            status_desc = "Staj, mezun veya genç yetenek programı. Doğrudan senin seviyene uygun yüksek öncelikli fırsat!"
         elif category == "STRONG":
             header = "🎯 <b>GÜÇLÜ EŞLEŞME YAKALANDI!</b>"
             status_desc = "Bu ilan senin doğrulanmış yeteneklerinle yüksek oranda örtüşüyor."

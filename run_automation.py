@@ -68,15 +68,15 @@ class JobAutomatorOrchestrator:
         print(f"📌 Dilim: {shift_label} ({len(queries)} sorgu taranacak)")
         print(f"{'='*70}")
 
-        locations = self.criteria.get("target_locations", ["Istanbul, Turkey", "Remote"])
+        locations = self.criteria.get("target_locations", ["Istanbul, Turkey", "Turkey Remote"])
         primary_loc = locations[0] if locations else "Istanbul, Turkey"
         extra_locs = locations[1:] if len(locations) > 1 else []
 
         min_score = self.criteria.get("min_match_score", 50.0)
         time_filter = time_filter_override if time_filter_override is not None else self.criteria.get("time_filter", "r86400")
         sort_by = self.criteria.get("sort_by", "DD")
-        experience_levels = self.criteria.get("experience_levels", ["1", "2", "3"])
-        jobs_limit = max_jobs_per_query if max_jobs_per_query is not None else self.criteria.get("jobs_per_query", 10)
+        experience_levels = self.criteria.get("experience_levels", None)
+        jobs_limit = max_jobs_per_query if max_jobs_per_query is not None else self.criteria.get("jobs_per_query", None)
 
         scanned_in_batch = 0
         matched_in_batch = 0
@@ -85,8 +85,8 @@ class JobAutomatorOrchestrator:
         processed_count = 0
 
         for query in queries:
-            limit_str = f"Limit: {jobs_limit}" if jobs_limit else "Tüm Son 24 Saat İlanları"
-            print(f"\n🔍 Aranıyor: '{query}' ({primary_loc} + Remote | Filtre: {time_filter} | {limit_str})...")
+            limit_str = f"Limit: {jobs_limit}" if jobs_limit else "Tüm Açılan İlanlar (Limitsiz)"
+            print(f"\n🔍 Aranıyor: '{query}' ({primary_loc} + Remote (Türkiye) | Filtre: {time_filter} | {limit_str})...")
             found_jobs = self.scraper.search_jobs(
                 query, 
                 location=primary_loc, 
@@ -96,20 +96,30 @@ class JobAutomatorOrchestrator:
                 experience_levels=experience_levels
             )
 
-            # Ek lokasyonlar (Remote / Uzaktan Çalışma) taraması
+            # Ek lokasyonlar (Remote / Uzaktan Çalışma - Türkiye) taraması
             for eloc in extra_locs:
-                if eloc == "Remote":
+                if "remote" in eloc.lower():
                     r_jobs = self.scraper.search_jobs(
                         query,
-                        location="Remote",
-                        limit=3,
+                        location="Turkey",
+                        limit=jobs_limit,
+                        time_filter=time_filter,
+                        sort_by=sort_by,
+                        experience_levels=experience_levels,
+                        work_type="2"
+                    )
+                else:
+                    r_jobs = self.scraper.search_jobs(
+                        query,
+                        location=eloc,
+                        limit=jobs_limit,
                         time_filter=time_filter,
                         sort_by=sort_by,
                         experience_levels=experience_levels
                     )
-                    for rj in r_jobs:
-                        if not any(j["job_url"] == rj["job_url"] for j in found_jobs):
-                            found_jobs.append(rj)
+                for rj in r_jobs:
+                    if not any(j["job_url"] == rj["job_url"] for j in found_jobs):
+                        found_jobs.append(rj)
 
             print(f"   -> {len(found_jobs)} ilan bulundu.")
 
@@ -162,19 +172,20 @@ class JobAutomatorOrchestrator:
 
                 scanned_in_batch += 1
 
-                if score < min_score:
+                # Sadece kesinlikle alan dışı meslekler (Hukuk, Kimya, Tıp, Satış vb.) veya tamamen alakasız teknolojiler elenir
+                if score == 0.0:
                     job_info["status"] = "SKIPPED"
-                    job_info["pending_reason"] = f"Düşük eşleşme skoru (%{score:.1f} < %{min_score:.1f})"
+                    job_info["pending_reason"] = analysis.get("fit_summary", "Alan dışı meslek veya teknoloji.")
                     job_info["notes"] = analysis["fit_summary"]
                     self.db.record_job(job_info)
-                    print(f"   ❌ Atlandı (Uyumsuz: %{score})")
+                    print(f"   ❌ Atlandı (Alan Dışı: {job_info['pending_reason']})")
                     if sample_skipped_sent < 1:
                         self.notifier.notify_skipped_sample(job_info, reason=job_info["pending_reason"])
                         sample_skipped_sent += 1
                     continue
 
-                # 1. Barajı geçen ilan için Yapay Zeka Derin İncelemesi (AI Reviewer)
-                print(f"   🧠 Yapay Zeka Derin İncelemesi yapılıyor...")
+                # 1. Gemini Modeli ile Derin Semantik İnceleme (AI Reviewer)
+                print(f"   🧠 Yapay Zeka (Gemini) Derin İncelemesi yapılıyor...")
                 ai_job_payload = {
                     "title": position,
                     "company": company,

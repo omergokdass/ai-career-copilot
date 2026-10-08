@@ -29,7 +29,7 @@ search_queries:
 
 target_locations:
   - "Istanbul, Turkey"
-  - "Remote"
+  - "Turkey (Remote)"
 
 platforms:
   - "LinkedIn"
@@ -37,10 +37,10 @@ platforms:
 
 time_filter: "r86400"  # Son 24 saatteki tüm güncel ilanlar
 sort_by: "DD"          # En yeni ilanlar en üstte (Date Descending)
-experience_levels: ["1", "2", "3"]
+experience_levels: null # Deneyim filtresi kaldırıldı: Deneyim seviyesi eklemiş/eklememiş tüm ilanlar dahil
 work_types: ["Remote", "Hybrid", "On-site"]
 
 min_match_score: 50.0
 
-# Sorgu başına taranacak maksimum ilan sayısı (Dengeli ve hızlı)
-jobs_per_query: 10
+# Sorgu başına limit kaldırıldı: Açılan bütün ilanları eksiksiz tarar
+jobs_per_query: null

@@ -32,3 +32,7 @@ output/DAILY_REPORT_*.md
 # Scratch, debug and user log files
 scratch/
 mesajlar.txt
+test_session/
+temp_kariyernet_detail.html
+output/*.html
+output/*.txt

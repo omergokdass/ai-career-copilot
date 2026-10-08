@@ -20,7 +20,8 @@ class LinkedInScraper:
         limit: Optional[int] = None,
         time_filter: Optional[str] = "r86400",  # r3600 (1 saat), r86400 (24 saat), r604800 (1 hafta)
         sort_by: Optional[str] = "DD",         # DD: Date Descending (en güncel)
-        experience_levels: Optional[List[str]] = None  # ['1', '2', '3'] -> Internship, Entry, Associate
+        experience_levels: Optional[List[str]] = None,  # ['1', '2', '3'] -> Internship, Entry, Associate
+        work_type: Optional[str] = None         # "1": On-site, "2": Remote, "3": Hybrid
     ) -> List[Dict[str, Any]]:
         """
         LinkedIn Guest API üzerinden parametreli, filtrelenmiş ve sayfalama destekli güncel iş araması yapar.
@@ -28,7 +29,7 @@ class LinkedInScraper:
         """
         jobs = []
         start = 0
-        max_pages = 10
+        max_pages = 30
         page = 0
 
         while page < max_pages:
@@ -48,6 +49,8 @@ class LinkedInScraper:
                 params["sortBy"] = sort_by
             if experience_levels:
                 params["f_E"] = ",".join(experience_levels)
+            if work_type:
+                params["f_WT"] = work_type
 
             query_string = urllib.parse.urlencode(params)
             url = f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?{query_string}"
@@ -162,7 +165,7 @@ class KariyerNetScraper:
             "Referer": "https://www.kariyer.net/is-ilanlari"
         }
 
-    def search_jobs(self, keyword: str, limit: Optional[int] = 10) -> List[Dict[str, Any]]:
+    def search_jobs(self, keyword: str, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         jobs = []
         encoded_kw = urllib.parse.quote(keyword)
         url = f"https://www.kariyer.net/is-ilanlari?kw={encoded_kw}"
@@ -243,7 +246,8 @@ class MultiPlatformScraper:
         limit: Optional[int] = None,
         time_filter: Optional[str] = "r86400",
         sort_by: Optional[str] = "DD",
-        experience_levels: Optional[List[str]] = None
+        experience_levels: Optional[List[str]] = None,
+        work_type: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         # 1. LinkedIn Araması
         all_jobs = self.linkedin.search_jobs(
@@ -252,29 +256,31 @@ class MultiPlatformScraper:
             limit=limit,
             time_filter=time_filter,
             sort_by=sort_by,
-            experience_levels=experience_levels
+            experience_levels=experience_levels,
+            work_type=work_type
         )
 
-        # 2. Kariyer.net Araması (Türkçe anahtar kelimeler ve genel roller için ekle)
-        tr_keywords_map = {
-            "Software Engineering Intern": "yazılım stajyeri",
-            "Genç Yetenek Yazılım": "genç yetenek yazılım",
-            "Junior Software Engineer": "junior yazılım",
-            "Junior C++ Developer": "c++ yazılım",
-            "C++ Developer": "c++ geliştirici",
-            "Junior Backend Developer": "backend geliştirici",
-            "Junior Frontend Developer": "frontend geliştirici",
-            "TypeScript Developer": "typescript",
-            "React Native Developer": "react native",
-            "Junior AI Engineer": "yapay zeka",
-            "AI Developer": "yapay zeka mühendisi",
-            "IT Support Specialist": "it destek uzmanı"
-        }
-        kariyer_kw = tr_keywords_map.get(keyword, keyword)
-        kariyer_jobs = self.kariyer.search_jobs(kariyer_kw, limit=5)
-        for kj in kariyer_jobs:
-            if not any(j["job_url"] == kj["job_url"] for j in all_jobs):
-                all_jobs.append(kj)
+        # 2. Kariyer.net Araması (Birincil aramada ekle, ek remote aramasında tekrar etme)
+        if not work_type:
+            tr_keywords_map = {
+                "Software Engineering Intern": "yazılım stajyeri",
+                "Genç Yetenek Yazılım": "genç yetenek yazılım",
+                "Junior Software Engineer": "junior yazılım",
+                "Junior C++ Developer": "c++ yazılım",
+                "C++ Developer": "c++ geliştirici",
+                "Junior Backend Developer": "backend geliştirici",
+                "Junior Frontend Developer": "frontend geliştirici",
+                "TypeScript Developer": "typescript",
+                "React Native Developer": "react native",
+                "Junior AI Engineer": "yapay zeka",
+                "AI Developer": "yapay zeka mühendisi",
+                "IT Support Specialist": "it destek uzmanı"
+            }
+            kariyer_kw = tr_keywords_map.get(keyword, keyword)
+            kariyer_jobs = self.kariyer.search_jobs(kariyer_kw, limit=limit)
+            for kj in kariyer_jobs:
+                if not any(j["job_url"] == kj["job_url"] for j in all_jobs):
+                    all_jobs.append(kj)
 
         return all_jobs
 

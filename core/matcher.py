@@ -152,10 +152,10 @@ class JobMatcher:
                     missing_skills.append(tech.upper() if len(tech) <= 4 else tech.title())
 
         # 4. Kıdem Seviyesi Tespiti (Senior / Lead / Intern / New Grad)
-        is_senior = bool(re.search(r'\b(senior|sr|lead|principal|staff|architect|manager|director)\b', title_lower))
-        is_intern_or_grad = any(k in title_lower or k in desc_lower[:400] for k in [
-            "intern", "staj", "stajyer", "trainee", "talent program", 
-            "genç yetenek", "graduate", "new grad", "entry level", "junior"
+        is_senior = bool(re.search(r'\b(senior|sr|lead|principal|staff|architect|manager|director|kıdemli|lider)\b', title_lower))
+        is_intern_or_grad = any(k in title_lower or k in desc_lower[:300] for k in [
+            "intern", "internship", "staj", "stajyer", "trainee", "talent program", 
+            "genç yetenek", "genc yetenek", "graduate", "new grad", "yeni mezun", "co-op"
         ])
 
         # 5. Puanlama Matematiği (Sıfır Yetenekle Barajı Geçmeyi Engelleyen Mimari)
