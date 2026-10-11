@@ -1,0 +1,66 @@
+# ==============================================================================
+# ADAY PROFİLİ (TEK GERÇEKLİK KAYNAĞI - %100 DOĞRULANMIŞ & DÜRÜST)
+# ==============================================================================
+# Ömer Faruk Gökdaş'ın sahip olduğu, mülakatta teknik olarak savunabileceği
+# gerçek eğitim, proje ve yetenek kümesi. Asla uydurma deneyim içermez.
+# ==============================================================================
+
+personal:
+  full_name: "Ömer Faruk Gökdaş"
+  title: "Yazılım Mühendisi | C/C++, Sistem Programlama, Backend & Mobil Geliştirici"
+  email: "faruk_gokdas@hotmail.com"
+  phone: "+90 505 982 58 87"
+  location: "İstanbul, Türkiye"
+  linkedin: "https://linkedin.com/in/omergokdass"
+  github: "https://github.com/omergokdass"
+  master_cv_pdf: "source_resume/Omer_Faruk_Gokdas_CV_Master_ATS.pdf"
+  notice_period: "Hemen başlayabilir (0 gün / Askerlik tecilli)"
+
+education:
+  - school: "42 İstanbul (Ecole 42 Network)"
+    degree: "Sistem Programlama ve Yazılım Mühendisliği"
+    dates: "Ocak 2025 - Devam Ediyor"
+    details: "POSIX Unix Standartları, C/C++, Eşzamanlılık (Multithreading, Mutex), Bellek Yönetimi (Heap, Valgrind sızıntısız), Process & Pipe Kontrolü."
+
+  - school: "Nişantaşı Üniversitesi"
+    degree: "Yazılım Mühendisliği Lisans"
+    dates: "Eylül 2021 - Temmuz 2026"
+    details: "Veri Yapıları & Algoritmalar, İşletim Sistemleri, Veritabanı Sistemleri, OOP, Bilgisayar Ağları."
+
+verified_projects:
+  couple_os:
+    name: "CoupleOS"
+    headline: "Gerçek Zamanlı Mobil Uygulama & Multi-LLM Mimarisi"
+    tech_stack: ["React Native", "Expo", "TypeScript", "NestJS", "Prisma ORM", "Socket.IO", "PostgreSQL", "Supabase", "Zustand", "Shopify Skia", "Gemini API", "OpenAI API"]
+    description: "Zustand state yönetimi ve Skia etkileşimli tuvaline sahip React Native (Expo) mobil uygulama. Prisma ORM ve Supabase PostgreSQL ile ölçeklenebilir NestJS backend mimarisi. Socket.IO ile gerçek zamanlı çizim ve telemetri senkronizasyonu. Gemini ve OpenAI multi-LLM API boru hatları ve kota koruma mimarisi."
+
+  minishell_philosophers:
+    name: "Minishell & Philosophers (42 İstanbul)"
+    headline: "POSIX Unix Kabuğu & Eşzamanlı Sistem Programlama"
+    tech_stack: ["C", "C++", "POSIX", "Multithreading", "Mutex", "Valgrind", "Linux", "GDB"]
+    description: "C dili ile POSIX uyumlu Unix shell (pipe, dup2, fork, execve, waitpid, sinyal işleme, dahili komutlar). Valgrind ile %100 sızıntısız heap bellek yönetimi. Philosophers projesinde pthread ve mutex kullanarak yarış durumlarını (race condition) ve kilitlenmeleri (deadlock) önleyen eşzamanlı algoritma tasarımı."
+
+  branda_ist:
+    name: "branda.ist"
+    headline: "Canlı Ticari Web Platformu & Programatik SEO"
+    tech_stack: ["Astro", "TypeScript", "SSG", "JavaScript", "HTML5", "CSS3", "Sharp", "PurgeCSS"]
+    description: "Astro ve TypeScript ile geliştirilmiş, 80+ sayfalı canlı endüstriyel e-ticaret/katalog platformu. Sharp ve PurgeCSS optimizasyonu ile 1.5 saniyenin altında açılış hızı. Semantik SEO mimarisi."
+
+  nishchat:
+    name: "NishChat (Bitirme Projesi)"
+    headline: "Gerçek Zamanlı Kampüs Mesajlaşma Platformu"
+    tech_stack: ["Node.js", "Express", "Socket.IO", "PostgreSQL", "React Native", "WebSockets"]
+    description: "Node.js, Express ve PostgreSQL mimarisiyle üniversite bitirme projesi olarak geliştirilen çift yönlü gerçek zamanlı mobil mesajlaşma uygulaması. Socket.IO ile düşük gecikmeli iletişim."
+
+  besiktas_intern:
+    name: "Beşiktaş Belediyesi IT Stajı"
+    headline: "Kurumsal Altyapı, Ağ & Sistem Yönetimi"
+    tech_stack: ["Active Directory", "TCP/IP", "Linux CLI", "Bash Scripting", "IT Desteği"]
+    description: "Active Directory kullanıcı hesapları ve güvenlik politikaları yönetimi. TCP/IP ağ sorun giderme ve kurumsal workstation desteği. Bash betikleriyle rutin ağ tanılamaları ve otomasyon."
+
+core_skills:
+  languages: ["C", "C++", "TypeScript", "JavaScript", "SQL", "Bash"]
+  backend_systems: ["Node.js", "NestJS", "Express", "Prisma ORM", "PostgreSQL", "Supabase", "MySQL", "Socket.IO", "WebSockets", "REST APIs"]
+  frontend_mobile: ["React Native", "Expo", "Astro", "React", "HTML5", "CSS3", "Zustand"]
+  systems_tools: ["Linux", "POSIX", "Git", "GitHub", "Docker (Basics)", "GDB", "Valgrind", "Active Directory", "TCP/IP"]
+  ai_llm: ["Google Gemini API", "OpenAI API", "Prompt Engineering", "LLM Entegrasyonu"]

@@ -1,14 +1,11 @@
 name: Daily Job Application Pipeline
 
 # Tetikleme Modeli: cron-job.org tarafından yönetilen %100 dakik REST API tetiklemesi (workflow_dispatch)
-# GitHub Actions'ın dahili 'schedule' cron'u sunucu yoğunluğu nedeniyle 6-8 saat gecikmelere
-# ve akşam saatlerinde (17, 18, 20, 23) sahte/çift tetiklenmelere yol açtığı için kaldırılmıştır.
-# Tüm zamanlama kontrolü ve vardiya saatleri cron-job.org paneli üzerinden tam vaktinde yürütülür.
 on:
   workflow_dispatch:
     inputs:
       shift:
-        description: 'Çalıştırılacak Vardiya (1, 2, 3, 4, auto, all)'
+        description: 'Çalıştırılacak Vardiya (1, 2, auto, all)'
         required: false
         default: 'auto'
         type: choice
@@ -16,8 +13,6 @@ on:
           - 'auto'
           - '1'
           - '2'
-          - '3'
-          - '4'
           - 'all'
 
 permissions:
@@ -45,10 +40,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Playwright Tarayıcısını Hazırla
-        run: |
-          python -m playwright install --with-deps chromium
-
       - name: Vardiya Belirle
         id: select-shift
         run: |
@@ -58,14 +49,13 @@ jobs:
           else
             CHOSEN_SHIFT="auto"
           fi
-
           echo "chosen_shift=$CHOSEN_SHIFT" >> $GITHUB_OUTPUT
           echo "Seçilen Vardiya: $CHOSEN_SHIFT"
 
       - name: Günlük İlan Taramasını ve AI Analizini Çalıştır
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL || 'gemini-flash-latest' }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_ENABLED: 'true'
@@ -82,6 +72,7 @@ jobs:
             echo "Veritabanında yeni değişiklik yok."
           else
             git commit -m "chore(db): update applications database [skip ci]"
+            git pull --rebase origin main || true
             git push origin main
           fi
 

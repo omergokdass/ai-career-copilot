@@ -1,44 +1,39 @@
-# 🚀 AI Career Copilot — Otonom İş Arama & Başvuru Asistanı
+# 🚀 AI Career Copilot — Otonom İş Arama & Kariyer Asistanı
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg?logo=python&logoColor=white)](https://python.org)
-[![Gemini](https://img.shields.io/badge/Google%20Gemini-2.5%20Flash-8E75B2.svg?logo=google-gemini&logoColor=white)](https://aistudio.google.com/)
+[![Gemini](https://img.shields.io/badge/Google%20Gemini-3.8%20Flash-8E75B2.svg?logo=google-gemini&logoColor=white)](https://aistudio.google.com/)
 [![Telegram](https://img.shields.io/badge/Telegram-Bot%20API-2CA5E0.svg?logo=telegram&logoColor=white)](https://core.telegram.org/bots)
-[![cron-job.org](https://img.shields.io/badge/Scheduler-cron--job.org%20(Dakik)-green.svg)](https://cron-job.org)
+[![cron-job.org](https://img.shields.io/badge/Scheduler-cron--job.org-green.svg)](https://cron-job.org)
 [![Platforms](https://img.shields.io/badge/Platforms-LinkedIn%20%7C%20Kariyer.net-orange.svg)](#)
-[![Zero-Hallucination](https://img.shields.io/badge/Dürüstlük-%25100%20Doğrulanmış%20Portföy-success.svg)](#)
+[![Location](https://img.shields.io/badge/Location-Sadece%20İstanbul-success.svg)](#)
 
-> **AI Career Copilot**, iş arama sürecini uçtan uca otomatikleştiren, **Google Gemini** bilişsel motoruyla güçlendirilmiş, sıfır halüsinasyon garantili ve bulut üzerinde 7/24 otonom çalışan yeni nesil bir kariyer asistanıdır.
-
-Bilgisayarınız kapalıyken bile **LinkedIn** ve **Kariyer.net** üzerindeki tüm güncel ilanları tarar, adayın gerçek mühendislik projeleriyle (CoupleOS, 42 İstanbul C/C++ Sistem Mimarisi, branda.ist, NishChat vb.) semantik uyum analizi yapar, LinkedIn mobil Kolay Başvuru (Easy Apply) formuna özel **maksimum 400 karakterlik insan yazımı başvuru notları** üretir ve doğrudan Telegram üzerinden tek dokunuşla başvurabileceğiniz zengin kartlar iletir.
+> **AI Career Copilot**, iş arama ve eleme sürecini uçtan uca otomatikleştiren, **Google Gemini** bilişsel motoruyla semantik eşleşme yapan ve Telegram üzerinden anlık başvuru paketleri sunan hafif, kararlı ve sıfır-hata odaklı bir kariyer asistanıdır.
 
 ---
 
-## 🌟 Öne Çıkan Yetenekler
+## 🌟 Öne Çıkan Özellikler
 
-* **🇹🇷 Çoklu Platform Taraması (LinkedIn + Kariyer.net):**
-  * LinkedIn'in yanı sıra Türkiye'nin en büyük iş portalı olan **Kariyer.net** de paralel taranır.
-  * Kariyer.net ilanları özel `🇹🇷 KARİYER.NET İLANI` rozeti ve doğrudan başvuru butonuyla Telegram'a iletilir.
-* **🌊 Tam Kapsamlı Çift Dalga Tarama Mimarisi (10:05 & 15:00 TSI):**
-  * İlan kategorileri yapay şekilde parçalanmaz; her çalışmada **TÜM KATEGORİLER** (Staj, C/C++, Backend, Frontend, Mobil, AI, IT Destek) taranır.
-  * Sabah açılan ilan sabah 10:05'te, öğlen açılan ilan öğleden sonra 15:00'te yakalanır. İlanlar için 24 saatlik bekleme süresi ortadan kaldırılmıştır.
-* **📍 Çoklu Lokasyon (İstanbul + Remote):**
-  * Hem İstanbul yerelindeki fırsatlar hem de Türkiye geneli ve uzaktan (Remote) çalışma imkanları eksiksiz taranır.
-* **🧠 Google Gemini 2.5 Flash & Dayanıklı Fallback Zinciri:**
-  * İlan metninin tamamını (görevler, teknik gereksinimler) semantik olarak inceler.
-  * Yüksek talep veya kota durumlarında otomatik olarak `gemini-flash-latest`, `gemini-2.5-pro` ve `gemini-2.5-flash-lite` fallback modellerine geçerek kesintisiz çalışır.
-* **💬 LinkedIn Mobil Uyumlu Kolay Başvuru Notu (0-400 Karakter):**
-  * LinkedIn mobil uygulamasındaki *"Başvurunuzla birlikte bir mesaj ekleyin (0/400)"* alanına özel üretilir.
-  * Klasik "Sayın Yetkili" gibi hantal şablonlardan arındırılmış, doğrudan teknik katma değere odaklanan samimi mühendis dili.
-  * Python seviyesinde kesin **$\le$ 400 karakter** uzunluk garantisi.
-* **🎯 %100 Dürüst ve Sıkı Eşleşme Mantığı:**
-  * `C#` / Unity oyun ilanlarının `C` diliyle çakışması önlenmiştir.
-  * `.NET`, `iOS`, `Flutter`, `SAP` gibi alan dışı pozisyonlar doğrudan elenir.
-  * Adayın portföyünden en az 1 teknik yetenek eşleşmedikçe ilan barajı geçemez.
-* **⏱️ cron-job.org ile %100 Dakik Çalışma:**
-  * GitHub Actions'ın geciken dahili cron kuyrukları devre dışı bırakılmıştır.
-  * Tüm zamanlama `cron-job.org` üzerinden saniyesi saniyesine ve gecikmesiz yürütülür.
-* **💾 Git Tabanlı Kalıcı Veritabanı:**
-  * `applications.db` SQLite veritabanı her çalıştırmada otomatik commit edilir (`[skip ci]`). Mükerrer bildirim gönderilmez.
+* **🇹🇷 İki Büyük Platform (LinkedIn + Kariyer.net):**
+  * LinkedIn Guest API ve Kariyer.net üzerinden güncel (son 24 saat) ilanları üyelik gerektirmeden kararlı şekilde çeker.
+* **📍 %100 Kesin İstanbul Lokasyon Doğrulaması:**
+  * Denizli, Tekirdağ, Ankara, İzmir gibi şehir dışı ilanlar ve belirsiz genel konumlar baştan elenir. Sadece İstanbul yerelindeki fırsatlar incelenir.
+* **🎯 Pozitif Alan Filtresi & Temiz Teknoloji Odaklanması:**
+  * Alakasız unvanlar (satış, çağrı merkezi, cerrahi robot, fiyatlandırma vb.) ve adayın uzmanlığı dışındaki teknolojiler (.NET, C#, Flutter, iOS Swift, Unity) doğrudan filtrelenir.
+  * Adayın gerçek gücüne (C/C++ Sistem, Node.js/NestJS Backend, React Native Mobil, Astro Frontend, AI & IT Stajı) tam uyumlu roller hedeflenir.
+* **🧠 Google Gemini Semantik Değerlendirmesi:**
+  * `gemini-flash-latest` ve `gemini-3.8-flash` modelleriyle ilanın görev tanımını derinlemesine analiz eder; mülakatta arkasında durulabilecek %100 dürüst eşleşme puanı üretir.
+* **💬 0–400 Karakterlik LinkedIn Kolay Başvuru Notu:**
+  * LinkedIn mobil uygulamasındaki *"Başvurunuzla birlikte bir mesaj ekleyin (0/400)"* alanına özel, Python seviyesinde **$\le$ 400 karakter** garantili, teknik ve samimi başvuru mesajı üretir.
+* **📱 Zengin Telegram Bildirim Kartları & Tek Dokunuş Başvuru:**
+  * Uyum puanına göre doğru rozetler:
+    * 🎯 **GÜÇLÜ EŞLEŞME** ($\ge$ %65)
+    * 💡 **DENENEBİLİR İLAN** (%50 – %64)
+    * Asla düşük puanlı ilanlara yanıltıcı başlık basılmaz.
+  * Dokun-kopyala kod bloğu ve doğrudan başvuru butonu (`[ 🚀 Kolay Başvur ]` / `[ 🌐 İlana Git ]`).
+* **💾 SQLite ile Mükerrer Önleme (Deduplication):**
+  * Taranan tüm ilanlar `applications.db` içinde saklanır; aynı ilan asla ikinci kez incelenmez veya bildirilmez.
+* **⚡ Ultra Hafif & Hızlı CI/CD (GitHub Actions + cron-job.org):**
+  * Ağır ve kırılgan tarayıcı otomasyonları (Playwright) kaldırılmıştır. Sistem bulut ortamında 1-2 dakika içinde hafifçe çalışır ve tamamlanır.
 
 ---
 
@@ -46,128 +41,101 @@ Bilgisayarınız kapalıyken bile **LinkedIn** ve **Kariyer.net** üzerindeki t�
 
 ```mermaid
 flowchart TD
-    Trigger["cron-job.org Webhook (10:05 & 15:00 TSI)"] --> Runner["GitHub Actions Cloud Runner"]
-    Runner --> Scraper["MultiPlatformScraper (LinkedIn + Kariyer.net)"]
+    Trigger["cron-job.org (Vardiya Tetiklemesi)"] --> GH["GitHub Actions Runner / Yerel CLI"]
+    GH --> Scraper["JobScraperManager (LinkedIn + Kariyer.net)"]
     
-    Scraper --> Deduplicate{"applications.db<br>Daha Önce İncelendi mi?"}
-    Deduplicate -->|Evet| Ignore["Atla (Mükerrer Önleme)"]
-    Deduplicate -->|Hayır| Matcher["JobMatcher (Teknik Filtre, C# Ayrıştırma & Puanlama)"]
+    Scraper --> Deduplicate{"Daha Önce Taranmış mı?<br>(applications.db)"}
+    Deduplicate -->|Evet| SkipSeen["Atla (Mükerrer Önleme)"]
+    Deduplicate -->|Hayır| LocFilter{"Lokasyon Filtresi<br>(Sadece İstanbul mu?)"}
     
-    Matcher -->|Uyum < %50 veya Alan Dışı| SkipRecord["Veritabanına 'SKIPPED' Olarak Kaydet"]
-    Matcher -->|Uyum >= %50| Gemini["AIReviewer (Gemini 2.5 Flash Semantik Analiz)"]
+    LocFilter -->|Hayır| SkipLoc["Atla & DB Kaydet (SKIPPED)"]
+    LocFilter -->|Evet| DomainFilter{"Alan Doğrulama<br>(Yazılım/Bilişim & Hedef Rol mü?)"}
     
-    Gemini --> Decision{"Değerlendirme & Başvuru Kanalı"}
-    Decision -->|LinkedIn Easy Apply| EANote["Özgün Top Choice Notu (Maks. 400 Karakter)"]
-    Decision -->|Şirket Portalı / Kariyer.net| OffsiteLink["Dış Portal Bağlantısı (Master ATS CV)"]
+    DomainFilter -->|Hayır| SkipDomain["Atla & DB Kaydet (SKIPPED)"]
+    DomainFilter -->|Evet| Details["İlan Detayı Çekimi"]
     
-    EANote --> Telegram["📱 Telegram Notifier Engine"]
-    OffsiteLink --> Telegram
-    SkipRecord -->|Vardiya Başı 1 Örnek| AuditNote["Telegram Denetim Bildirimi"]
-    AuditNote --> Telegram
+    Details --> Gemini["Google Gemini API (Semantik Analiz)"]
+    Gemini --> Decision{"Uyum Skoru & Karar"}
     
-    Telegram --> Commit["Git Auto-Commit: applications.db ➔ main"]
+    Decision -->|< %50 / Reddedildi| SkipAI["Atla & DB Kaydet (SKIPPED)"]
+    Decision -->|>= %50 (Uygun)| Telegram["📱 Telegram Zengin Bildirim Kartı<br>• Uyum Skoru & Rozet<br>• Dokun-Kopyala 400 Karakter Not<br>• Doğrudan Başvuru Butonu"]
+    
+    Telegram --> SaveDB["Veritabanına Kaydet (NOTIFIED)"]
+    SaveDB --> Report["Günlük Markdown Raporu & Git Auto-Commit"]
 ```
 
 ---
 
-## 📂 Proje Dizin Yapısı
+## 📂 Dizin Yapısı
 
 ```text
 ├── .github/workflows/
-│   └── daily_pipeline.yml       # cron-job.org uyumlu GitHub Actions iş akışı + DB Git commit adımı
+│   └── daily_pipeline.yml       # Hafif ve hızlı GitHub Actions iş akışı
 ├── config/
-│   ├── master_profile.yaml      # Adayın tek gerçeklik kaynağı (%100 doğrulanmış portföy & yetenekler)
-│   ├── application_rules.yaml   # Eşleşme kuralları, kıdem ve öncelik tanımları
-│   ├── notifications.yaml       # Telegram bildirim şablonları ve format ayarları
-│   └── search_criteria.yaml     # 14 odaklı arama sorgusu, lokasyonlar ve platform ayarları
+│   ├── candidate_profile.yaml   # Adayın doğrulanmış tek gerçeklik kaynağı
+│   └── search_config.yaml       # Taranan sorgular, İstanbul konumu ve eşik değerleri
 ├── core/
-│   ├── ai_reviewer.py           # Gemini semantik analizi, fallback zinciri ve 400 karakterlik Easy Apply not üretimi
-│   ├── db.py                    # SQLite bağlantı yönetimli ve çift kayıt önleyici DB motoru
-│   ├── matcher.py               # Negatif unvan filtresi, C vs C# regex ve sıkı puanlama matematiği
-│   ├── notifier.py              # Zengin Telegram HTML kartları, butonlar ve istatistik özeti
-│   ├── scraper.py               # LinkedIn + Kariyer.net birleşik MultiPlatformScraper motoru
-│   └── builder.py               # Master ATS CV eşleme motoru
+│   ├── models.py                # JobPosting ve ReviewResult veri modelleri
+│   ├── location_filter.py       # Kesin ve sıkı İstanbul doğrulama motoru
+│   ├── domain_filter.py         # Pozitif alan ve alan dışı teknoloji filtresi
+│   ├── database.py              # SQLite bağlantı ve çift kayıt önleyici motor
+│   ├── ai_reviewer.py           # Gemini semantik analizi ve 400 karakter not üretimi
+│   ├── notifier.py              # Zengin Telegram HTML kartları ve istatistik bildirimi
+│   ├── orchestrator.py          # Tüm bileşenleri koordine eden ana orkestratör
+│   └── scrapers/
+│       ├── base.py              # Temel scraper soyut sınıfı
+│       ├── linkedin_scraper.py  # LinkedIn Guest API scraper
+│       ├── kariyernet_scraper.py# Kariyer.net scraper
+│       └── manager.py           # Birleşik scraper yöneticisi
 ├── source_resume/
-│   └── Omer_Faruk_Gokdas_CV_Master_ATS.pdf  # 92 puanlık doğrulanmış tek sayfa ATS CV
+│   ├── Omer_Faruk_Gokdas_CV_Master_ATS.pdf     # 92 puanlık doğrulanmış tek sayfa ATS CV
+│   └── Omer_Faruk_Gokdas_CV_Master_ATS_TR.pdf  # Türkçe ATS CV
 ├── tests/
-│   ├── test_system.py           # Sistem temel bileşen testleri
-│   └── test_redesign.py         # Çift dalga, regex ve filtreleme birim testleri
-├── applications.db              # Canlı takip veritabanı (otomatik commit edilir)
-├── run_automation.py            # Ana çalıştırma, CLI parametreleri ve vardiya orkestratörü
-├── requirements.txt             # Python bağımlılıkları
+│   ├── test_location_filter.py  # Lokasyon filtresi birim testleri
+│   ├── test_domain_filter.py    # Alan filtresi birim testleri
+│   ├── test_database.py         # DB ve tekilleştirme testleri
+│   ├── test_ai_reviewer.py      # AI inceleme ve 400 karakter not testleri
+│   ├── test_notifier.py         # Telegram kart formatı testleri
+│   ├── test_scrapers.py         # Scraper parse testleri
+│   └── test_e2e_orchestrator.py # Uçtan uca entegrasyon testi
+├── applications.db              # SQLite takip veritabanı
+├── run_automation.py            # Ana çalıştırma CLI aracı
+├── requirements.txt             # Minimal Python bağımlılıkları (requests, pyyaml, python-dotenv)
 └── README.md                    # Proje dokümantasyonu
 ```
 
 ---
 
-## 🎯 Arama Kriterleri ve Taranan Roller
+## ⚡ Hızlı Başlangıç & Yerel Çalıştırma
 
-| Kategori | Taranan Anahtar Kelimeler | Hedef Platformlar |
-| :--- | :--- | :--- |
-| **Genç Yetenek & Staj** | `Software Engineering Intern`, `Genç Yetenek Yazılım`, `Junior Software Engineer` | LinkedIn + Kariyer.net |
-| **C/C++ & Sistem** | `Junior C++ Developer`, `C++ Developer` | LinkedIn + Kariyer.net |
-| **Backend & Veritabanı** | `Junior Backend Developer`, `Node.js Developer`, `NestJS Developer` | LinkedIn + Kariyer.net |
-| **Frontend & Web & Mobil** | `Junior Frontend Developer`, `TypeScript Developer`, `React Native Developer` | LinkedIn + Kariyer.net |
-| **Yapay Zeka & Altyapı** | `Junior AI Engineer`, `AI Developer`, `IT Support Specialist` | LinkedIn + Kariyer.net |
-
----
-
-## 📱 Telegram Bildirim Formatı
-
-Sistem Telegram üzerinden kullanıcıyı gereksiz bilgiyle boğmaz; doğrudan aksiyon aldırır:
-
-1. **LinkedIn Kolay Başvuru (Easy Apply) Kartı:**
-   * Uyum Puanı, Dil (TR/EN), Öne Çıkarılan Proje.
-   * `💬 LinkedIn Başvuru Mesajı (Top Choice / 0-400 Karakter — Dokun Kopyala)`: Telefonda dokunulduğunda panoya kopyalanan hazır metin.
-   * `[ 🚀 ⚡ Kolay Başvur (LinkedIn) ]` butonu.
-2. **Kariyer.net Kartı:**
-   * `🇹🇷 KARİYER.NET İLANI` rozeti.
-   * `[ 🚀 🌐 Kariyer.net'te Başvur ]` butonu.
-3. **Şirket Portalı / Dış Başvuru Kartı:**
-   * `[ 🚀 🌐 Şirket Portalında Başvur ]` butonu.
-4. **Denetim Kartı:**
-   * `🚫 [ÖRNEK ELENEN İLAN — TEST/DENETİM]` ile botun hangi ilanları neden elediğini gösteren şeffaf geri bildirim.
-5. **Tarama Özeti:**
-   * Taranan yeni ilan, uygun bulunan ve elenen ilan sayıları.
-
----
-
-## ⚡ Hızlı Başlangıç & Kurulum
-
-### 1. Depoyu Klonlayın ve Bağımlılıkları Yükleyin
-
+### 1. Bağımlılıkları Yükleyin
 ```bash
-git clone https://github.com/omergokdass/ai-career-copilot.git
-cd ai-career-copilot
-python -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-### 2. Ortam Değişkenlerini Ayarlayın
-
-`.env` dosyanızı oluşturup API anahtarlarınızı tanımlayın:
-
+### 2. Ortam Değişkenlerini Tanımlayın (`.env`)
 ```env
-GEMINI_API_KEY=AQ.Ab8...SizinGeminiAnahtariniz
-GEMINI_MODEL=gemini-2.5-flash
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-flash-latest
 
-TELEGRAM_BOT_TOKEN=123456789:ABC...BotTokeniniz
-TELEGRAM_CHAT_ID=6865745103
+TELEGRAM_BOT_TOKEN=your_bot_token_here
+TELEGRAM_CHAT_ID=your_chat_id_here
 TELEGRAM_ENABLED=true
 ```
 
-### 3. Yerel Test ve Çalıştırma
-
+### 3. Çalıştırma
 ```bash
-# Tüm kategorileri tam tarar (Türkiye saatine göre 1. veya 2. Dalga etiketi basar)
-python run_automation.py --force
+# Tam tarama yap
+python run_automation.py
 
-# Tüm birim testleri çalıştırın
-python -m unittest discover tests
+# Belirli vardiya ile çalıştır (1: Sabah, 2: Öğle)
+python run_automation.py --shift 1
+
+# Test amaçlı sorgu başına maksimum 2 ilanla sınırla
+python run_automation.py --limit 2
 ```
 
----
-
-## 🔒 Güvenlik ve Gizlilik
-
-* Hassas bilgiler (`.env`, bot tokenleri, API keyler) asla repoya commit edilmez.
-* GitHub Actions ortamında tüm gizli değişkenler **GitHub Secrets** üzerinden güvenli biçimde enjekte edilir.
+### 4. Tüm Testleri Çalıştırın
+```bash
+python -m unittest discover tests
+```

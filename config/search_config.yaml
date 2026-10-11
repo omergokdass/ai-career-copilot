@@ -1,0 +1,64 @@
+# ==============================================================================
+# İŞ ARAMA VE FİLTRELEME KONFİGÜRASYONU
+# ==============================================================================
+
+# Hedef Lokasyon: SADECE İstanbul
+location:
+  target_city: "Istanbul"
+  target_query: "Istanbul, Turkey"
+  allow_only_istanbul: true
+
+# Taranacak Roller ve Anahtar Kelimeler
+search_queries:
+  # Staj & Genç Yetenek Fırsatları
+  - query: "Software Engineering Intern"
+    category: "internship"
+  - query: "Genç Yetenek Yazılım"
+    category: "internship"
+  - query: "Yazılım Stajyeri"
+    category: "internship"
+  - query: "Junior Software Engineer"
+    category: "junior"
+
+  # C/C++ & Sistem
+  - query: "Junior C++ Developer"
+    category: "systems"
+  - query: "C++ Developer"
+    category: "systems"
+
+  # Backend & Veritabanı
+  - query: "Junior Backend Developer"
+    category: "backend"
+  - query: "Node.js Developer"
+    category: "backend"
+  - query: "NestJS Developer"
+    category: "backend"
+
+  # Frontend & Mobil
+  - query: "Junior Frontend Developer"
+    category: "frontend"
+  - query: "TypeScript Developer"
+    category: "frontend"
+  - query: "React Native Developer"
+    category: "mobile"
+
+  # AI & IT Destek / Sistem
+  - query: "Junior AI Engineer"
+    category: "ai"
+  - query: "IT Support Specialist"
+    category: "it_support"
+
+# Platform Ayarları
+platforms:
+  linkedin:
+    enabled: true
+    time_filter: "r86400"  # Son 24 saat (taze ilanlar)
+    sort_by: "DD"          # En yeni ilanlar önce
+  kariyernet:
+    enabled: true
+
+# Değerlendirme Eşikleri
+thresholds:
+  strong_match_min: 65.0       # 65 ve üzeri: GÜÇLÜ EŞLEŞME
+  borderline_min: 50.0         # 50 - 64: DENENEBİLİR İLAN (Sınırda)
+  skip_under: 50.0             # 50 altı: KESİNLİKLE ELENİR (Bildirim gönderilmez)
